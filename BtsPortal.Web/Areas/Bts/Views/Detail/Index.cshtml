@@ -1,0 +1,316 @@
+﻿@using BtsPortal.Entities.Bts
+@using BtsPortal.Web.Extensions
+@using BtsPortal.Web.Infrastructure.Settings
+@using PagedList.Mvc
+@model BtsPortal.Web.ViewModels.Bts.BtsSearchRequestResponse
+
+@{
+    ViewBag.Title = "BTS Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2> BizTalk Search</h2>
+@using (@Html.BeginForm("Index", "Detail", FormMethod.Get, new { @class = "formShowLoadOnSubmit" }))
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-condensed table-striped">
+                    <tr>
+                        <td><b>Application</b></td>
+                        <td>
+                            @Html.DropDownListFor(m => m.Request.Application, Model.Request.Applications, new { @class = "form-control input-sm", @onchange = "reloadArtifacts()", id = "appList" })
+                        </td>
+                        <td><b>Status</b></td>
+                        <td>
+                            @Html.EnumDropDownListFor(x => x.Request.Status, "--Choose One Mandatory--", new { @class = "form-control input-sm", @onchange = "reloadArtifacts()", id = "statusList" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Artifact Type</b></td>
+                        <td>
+                            @Html.EnumDropDownListFor(x => x.Request.ArtifactType, "--Choose One Optional--", new { @class = "form-control input-sm", @onchange = "reloadArtifacts()", id = "artifactTypeList" })
+                        </td>
+                        <td><b>Artifact Name</b></td>
+                        <td>
+                            @Html.DropDownListFor(m => m.Request.ArtifactId, Model.Request.ArtifactIds, new { @class = "form-control input-sm", id = "Request_ArtifactId" })
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <input type="hidden" value="true" id="Request_Init" name="Request.Init" />
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="form-group form-group-sm">
+                    <div class="row">
+                        <input type="submit" class="btn btn-primary" value="Search" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}
+
+<div class="container">
+    @if (!string.IsNullOrWhiteSpace(Model.Error))
+    {
+        <div class="alert alert-danger">
+            <strong>Error - </strong> @Model.Error
+        </div>
+    }
+    <div id="divAlert"></div>
+
+    <div class="row">
+        <div class="col-md-10">
+            @Html.PagedListPager(Model.PagedResponses,
+                page => Url.Action("Index", new
+                {
+                    page,
+                    Model.Request.Application,
+                    Model.Request.Status,
+                    Model.Request.DateCreatedFrom,
+                    Model.Request.DateCreatedTo,
+                    Model.Request.ArtifactType,
+                    Model.Request.ArtifactId,
+                    Model.Request.Init
+                }))
+        </div>
+        <div class="col-md-2">
+            @if (Model.Request.Status == BtsInstanceStatus.SuspendedNonResumable || Model.Request.Status == BtsInstanceStatus.SuspendedResumable)
+            {
+                <button type="button" class="btn btn-sm btn-danger" onclick="bulkMigrateInstances()" data-toggle="tooltip" title="Bulk move data to esb exception db and terminate instance.">
+                    <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Bulk ESB
+                </button>
+            }
+        </div>
+
+    </div>
+    @if (Model.Request.Status == BtsInstanceStatus.SuspendedResumable || Model.Request.Status == BtsInstanceStatus.SuspendedNonResumable)
+    {
+        <div class="row">
+            <div class="col-lg-12">
+                <table class="table table-condensed table-striped table-font12">
+                    <tr>
+                        <th>
+                            @Html.CheckBox("chkHeader", new { @id = "chkHeader" })
+                        </th>
+                        <th></th>
+                        <th></th>
+                        <th>Id</th>
+                        <th>Artifact</th>
+                        <th>Date Created</th>
+                        <th>Server</th>
+                        <th>Error</th>
+                        <th>Date Suspended</th>
+                        <th></th>
+                    </tr>
+                    @foreach (var response in Model.Responses)
+                    {
+                        <tr>
+                            <td>
+                                @Html.CheckBox("chk" + response.InstanceId.ToString().RemoveNonAlphaNumeric(), new { @id = "chk" + response.ToString().RemoveNonAlphaNumeric(), @class = "chkRow", title = "Only applicable for suspended instances.", data_value = @response.InstanceId })
+                            </td>
+                            <td data-toggle="tooltip" title="@response.InstanceStatus.ToString()">
+                                <div data-toggle="tooltip" title="@response.InstanceStatus.ToString()">
+                                    @switch (response.InstanceStatus)
+                                    {
+                                        case BtsInstanceStatus.ReadyToRun:
+                                            <i class="fa fa-hourglass fa-fw" aria-hidden="true" style="color: yellowgreen"></i>
+                                            break;
+                                        case BtsInstanceStatus.Running:
+                                            <i class="fa fa-refresh fa-fw" aria-hidden="true" style="color: blue"></i>
+                                            break;
+                                        case BtsInstanceStatus.Dehydrated:
+                                            <i class="fa fa-check fa-fw" aria-hidden="true" style="color: magenta"></i>
+                                            break;
+                                        case BtsInstanceStatus.SuspendedResumable:
+                                            <i class="fa fa-times fa-fw" aria-hidden="true" style="color: red"></i>
+                                            break;
+                                        case BtsInstanceStatus.SuspendedNonResumable:
+                                            <i class="fa fa-times fa-fw" aria-hidden="true" style="color: red"></i>
+                                            break;
+                                    }
+                                </div>
+
+                            </td>
+                            <td>
+                                <div data-toggle="tooltip" title="@response.ArtifactType.ToString()">
+                                    @switch (response.ArtifactType)
+                                    {
+                                        case BtsArtifactType.SendPort:
+                                            <i class="fa fa-sign-out" aria-hidden="true"></i>
+                                            break;
+                                        case BtsArtifactType.ReceivePort:
+                                            <i class="fa fa-sign-in fa=fa-fw" aria-hidden="true"></i>
+                                            break;
+                                        default:
+                                            <i class="fa fa-cogs" aria-hidden="true"></i>
+                                            break;
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                                <span class="span-width-100">
+                                    <a href="#instanceDetail" onclick="displayInstanceDetail('@response.InstanceId')">@response.InstanceId</a>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="span-width-150">
+                                    @response.ArtifactName
+                                </span>
+                            </td>
+                            <td>
+                                <span class="span-width-100">
+                                    @response.DateCreatedLocal.ToString(AppSettings.DateTimeDisplay)
+                                </span>
+                            </td>
+                            <td>
+                                <span class="span-width-100">
+                                    @response.ProcessingServer
+                                </span>
+                            </td>
+                            <td>
+                                <span class="span-width-150">
+                                    @response.ErrorDescription
+                                </span>
+                            </td>
+                            <td>
+                                <span class="span-width-100">
+                                    @(response.DateSuspended?.ToLocalTime().ToString(AppSettings.DateTimeDisplay) ?? "")
+                                </span>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-xs btn-danger" id="btn-flagged-@response.InstanceId.ToString().RemoveNonAlphaNumeric()" onclick="migrateInstance('@response.InstanceId','btn-flagged-@response.InstanceId.ToString().RemoveNonAlphaNumeric()')" data-toggle="tooltip" title="Move data to esb exception db and terminate instance.">
+                                    <i class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;ESB
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    }
+    else if (Model.Request.Status == BtsInstanceStatus.ReadyToRun || Model.Request.Status == BtsInstanceStatus.Running || Model.Request.Status == BtsInstanceStatus.Dehydrated)
+    {
+        <div class="row">
+            <div class="col-lg-12">
+                <table class="table table-condensed table-striped table-font12">
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th>Id</th>
+                        <th>Artifact</th>
+                        <th>Date Created</th>
+                        <th>Server</th>
+
+                    </tr>
+                    @foreach (var response in Model.Responses)
+                    {
+                        <tr>
+                            <td>
+                                <div data-toggle="tooltip" title="@response.InstanceStatus.ToString()">
+                                    @switch (response.InstanceStatus)
+                                    {
+                                        case BtsInstanceStatus.ReadyToRun:
+                                            <i class="fa fa-hourglass fa-fw" aria-hidden="true" style="color: yellowgreen"></i>
+                                            break;
+                                        case BtsInstanceStatus.Running:
+                                            <i class="fa fa-refresh fa-fw" aria-hidden="true" style="color: blue"></i>
+                                            break;
+                                        case BtsInstanceStatus.Dehydrated:
+                                            <i class="fa fa-check fa-fw" aria-hidden="true" style="color: magenta"></i>
+                                            break;
+                                        case BtsInstanceStatus.SuspendedResumable:
+                                            <i class="fa fa-times fa-fw" aria-hidden="true" style="color: red"></i>
+                                            break;
+                                        case BtsInstanceStatus.SuspendedNonResumable:
+                                            <i class="fa fa-times fa-fw" aria-hidden="true" style="color: red"></i>
+                                            break;
+                                    }
+                                </div>
+
+                            </td>
+                            <td data-toggle="tooltip" title="@response.ArtifactType.ToString()">
+                                <div data-toggle="tooltip" title="@response.ArtifactType.ToString()">
+                                    @switch (response.ArtifactType)
+                                    {
+                                        case BtsArtifactType.SendPort:
+                                            <i class="fa fa-sign-out" aria-hidden="true"></i>
+                                            break;
+                                        case BtsArtifactType.ReceivePort:
+                                            <i class="fa fa-sign-in fa=fa-fw" aria-hidden="true"></i>
+                                            break;
+                                        default:
+                                            <i class="fa fa-cogs" aria-hidden="true"></i>
+                                            break;
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                                <span class="span-width-100">
+                                    <a href="#instanceDetail" onclick="displayInstanceDetail('@response.InstanceId')">@response.InstanceId</a>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="span-width-150">
+                                    @response.ArtifactName
+                                </span>
+                            </td>
+                            <td>
+                                <span class="span-width-100">
+                                    @response.DateCreatedLocal.ToString(AppSettings.DateTimeDisplay)
+                                </span>
+                            </td>
+                            <td>
+                                <span class="span-width-100">
+                                    @response.ProcessingServer
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    }
+
+</div>
+
+<div class="modal" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+
+</div>
+<div id="confirmActionModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Please confirm your action. This will terminate the instance(s) in biztalk and move them over to the esb database.</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-primary" id="btnProceed">Proceed</button>
+                <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<input type="hidden" id="hCurrentStatus" value="@Model.Request.Status.ToString()" />
+<input type="hidden" id="hCurrentApplication" value="@Model.Request.Application" />
+<input type="hidden" id="artPerApp" value="@Url.Action("ArtifactPerAppAndType","Dashboard")" />
+<input type="hidden" id="instDtlUrl" value="@Url.Action("InstanceDetail","Detail")" />
+<input type="hidden" id="msgDtlUrl" value="@Url.Action("MessageDetail","Detail")" />
+<input type="hidden" id="migrateInstUrl" value="@Url.Action("MigrateInstancesToEsb","BtsOps")" />
+@section Scripts{
+
+    <script src="~/Scripts/site-bts-detail.js"></script>
+}
+

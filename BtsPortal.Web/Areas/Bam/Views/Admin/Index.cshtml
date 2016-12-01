@@ -1,0 +1,47 @@
+﻿
+@{
+    ViewBag.Title = "Manage BAM";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container container-fluid">
+    <br />
+    <div class="row">
+        <div id="notif"></div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-9">
+            <div class="row">
+                <div class="form-group">
+                    <label for="activity" class="control-label">Activity</label>
+                    @Html.DropDownList("activity", (List<SelectListItem>)ViewBag.activities, new { @id = "activity", @class = "form-control input-sm", @onchange = "loadActivityView('')", data_url = @Url.Action("ActivityView", "Admin") })
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-sm btn-primary" onclick="loadActivityView()">
+                        <i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;Refresh
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <br />
+    <div class="row">
+        <div id="vwPort">
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="bamModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+
+</div>
+
+<input type="hidden" id="confUrl" value="@Url.Action("Configuration", "Admin")" />
+<input type="hidden" id="toggleConfUrl" value="@Url.Action("ToggleConfiguration","Admin")" />
+
+@section Scripts{
+   <script src="~/Scripts/site-bam-admin.js"></script>
+}
+
+

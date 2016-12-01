@@ -1,0 +1,88 @@
+﻿@model BtsPortal.Entities.Esb.EsbAlertSubscription
+
+<div class="modal-dialog modal-lg" style="width: 80%" data-backdrop="static" id="createAlertModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Add Subscription</h4>
+        </div>
+        <div class="modal-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-font12 table-striped">
+                            <tr>
+                                <td>
+                                    <b>Alert Id:</b>
+                                </td>
+                                <td>
+                                    <input type="text" value="@Model.AlertId" readonly="readonly" id="alertId" size="35"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Subscriber :</b>
+                                </td>
+                                <td>
+                                    <input type="text" value="@Model.Subscriber" readonly="readonly" id="subscriberId" size="35"/>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Is Group :</b>
+                                </td>
+                                <td>
+                                    @Html.CheckBox("isGroup", Model.IsGroup, new {id = "isGroup"})
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>Custom Email :</b>
+                                </td>
+                                <td>
+                                    <input type="email" value="@Model.CustomEmail" id="customEmail" size="35"/>
+
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="btnSave" class="btn btn-primary" onclick="saveNewSubsciption()">Save</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>
+<script type="text/javascript">
+    function saveNewSubsciption() {
+        var alertId = $('#alertId').val();
+        var url = "@Url.Action("SaveSubscription", "Alert")";
+        $('#btnSave').prop("disabled", true);
+
+        $.ajax({
+            cache: false,
+            url: url,
+            data: { "AlertId": $('#alertId').val(), "Subscriber": $('#subscriberId').val(), "IsGroup": $('#isGroup').prop('checked'), "CustomEmail": $('#customEmail').val() },
+            method: "POST",
+            success: function (data, textStatus, jqXHR) {
+                if (data.Success === true) {
+                    window.location.reload();
+
+                } else {
+                    alert(data.Error);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('unexpected error in "loadLogs" method.');
+            }
+        });
+
+    }
+</script>

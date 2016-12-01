@@ -1,0 +1,234 @@
+﻿@model BtsPortal.Web.ViewModels.Esb.CreateAlert
+
+<div class="modal-dialog modal-lg" style="width: 80%" data-backdrop="static" id="createAlertModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">New Alert</h4>
+        </div>
+        <div class="modal-body">
+            <div class="divAlert"></div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">
+                        <b>Application : </b>
+                    </div>
+                    <div class="col-md-9">
+                        @Html.DropDownListFor(m => m.Application, Model.Applications, new {@class = "form-control input-sm", @id = "app"})
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-md-3">
+                        <b>Type : </b>
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EnumDropDownListFor(x => x.AlertType, "--Choose Type--", new { @class = "form-control input-sm", id = "alertType", @onchange = "alertTypeChanged()" })
+                        <span id="summAlert" style="display: none">
+                            <i>every</i>
+                            @Html.DropDownList("summAlertInterval", (List<SelectListItem>)ViewBag.minutes, new { @class = "form-control input-sm", id = "summAlertInterval" })
+                            <i>minutes</i>
+
+                        </span>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-md-12">
+                        <b>Conditions : </b>
+                    </div>
+                </div>
+                <div class="row">
+                    <table class="table table-striped">
+                        <tr>
+                            <td>Criteria</td>
+                            <td>Operator</td>
+                            <td>Value</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <select id="selCondition">
+                                    <option value="Application">Application</option>
+                                    <option value="ErrorType">Error ParameterType</option>
+                                    <option value="FailureCategory">Failure Category</option>
+                                    <option value="FaultCode">Fault Code</option>
+                                    <option value="FaultGenerator">Fault Generator</option>
+                                    <option value="FaultSeverity">FaultSeverity</option>
+                                    <option value="MachineName">MachineName</option>
+                                    <option value="Scope">Scope</option>
+                                    <option value="ServiceName">ServiceName</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select id="selOperator" class="form-control input-sm">
+                                    <option value="=">=</option>
+                                    <option value="!=">!=</option>
+                                    <option value="<"><</option>
+                                    <option value=">">>=</option>
+                                    <option value="<="><=</option>
+                                </select>
+                            </td>
+                            <td>
+                                <div id="divApps">
+                                    <input type="text" id="appValue" class="form-control input-sm" readonly="readonly" />
+                                </div>
+                                <div id="divText">
+                                    <input type="text" id="txtValue" class="form-control input-sm" />
+                                </div>
+                                <div id="divFaultGenerator">
+                                    <select id="selfaultGenerator" class="form-control input-sm">
+                                        <option value="Messaging">Messaging</option>
+                                        <option value="Orchestration">Orchestration</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                <button class="btn btn-xs" onclick="addCondition()">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                </button>
+
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+                <br />
+                <br />
+                <div class="row">
+                    <h4>Selected Conditions</h4>
+                    <table class="table table-striped" id="tblSelectedConditions">
+                        <tr>
+                            <td>Criteria</td>
+                            <td>Operator</td>
+                            <td>Value</td>
+                            <td></td>
+                        </tr>
+
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="btnSave" class="btn btn-primary" onclick="saveNewAlert()">Save</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>
+
+<script type="text/javascript">
+    var selectedConditions = [];
+    $(function () {
+        $('#divText').hide();
+        $('#divFaultGenerator').hide();
+        $('#appValue').val($('#app').val());
+
+        $('#app')
+            .change(function () {
+                $('#appValue').val($('#app').val());
+            });
+
+        $('#selCondition')
+            .change(function () {
+                var val = $('#selCondition').val();
+                if (val === "Application") {
+                    $('#divText').hide();
+                    $('#divFaultGenerator').hide();
+                    $('#divApps').show();
+
+                } else if (val === "FaultGenerator") {
+                    $('#divText').hide();
+                    $('#divFaultGenerator').show();
+                    $('#divApps').hide();
+                } else {
+                    $('#divText').show();
+                    $('#divFaultGenerator').hide();
+                    $('#divApps').hide();
+                }
+            });
+    });
+
+    function addCondition() {
+        var criteria = $('#selCondition').val();
+        var operator = $('#selOperator').val();
+        var criteriaValue = "";
+        if (criteria === "Application") {
+            criteriaValue = $('#appValue').val();
+        } else if (criteria === "FaultGenerator") {
+            criteriaValue = $('#selfaultGenerator').val();
+        } else {
+            criteriaValue = $('#txtValue').val();
+        }
+
+        var counter = selectedConditions.length + 1;
+        var data = { "criteria": criteria, "Operation": operator, "Value": criteriaValue };
+
+        if ($.inArray(data, selectedConditions) === -1) {
+            selectedConditions.push(data);
+            $('#tblSelectedConditions')
+                .append(
+                    "<tr id='dat_" +
+                    counter +
+                    "'>" +
+                    "<td>" +
+                    criteria +
+                    "</td>" +
+                    "<td>" +
+                    operator +
+                    "</td>" +
+                    "<td>" +
+                    criteriaValue +
+                    "</td>" +
+                    "<td><button class='btn btn-danger btn-xs' onclick='removeSelectedCondition(" + counter + ")'>X</button></td>" +
+                    "</tr>"
+                );
+        }
+    }
+
+    function removeSelectedCondition(counter) {
+        selectedConditions.splice(counter, 1);
+        $('#dat_' + counter).remove();
+    }
+
+    function saveNewAlert() {
+        var app = $('#app').val();
+        var alertType = $("#alertType").val();
+        var alertMins = $("#summAlertInterval").val();
+
+        var url = "@Url.Action("SaveAlert", "Alert")";
+        $('#btnSave').prop("disabled", true);
+
+        $.ajax({
+            cache: false,
+            url: url,
+            data: { "app": app, "conds": selectedConditions, "alertType": alertType, "alertMins": alertMins },
+            method: "POST",
+            success: function (data, textStatus, jqXHR) {
+                if (data.Success === true) {
+                    window.location.reload();
+
+                } else {
+                    alert(data.Error);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('unexpected error in "loadLogs" method.');
+            }
+        });
+
+    }
+
+    function alertTypeChanged() {
+        var value = $("#alertType").val();
+        if (value === "2") {
+            $("#summAlert").show();
+        } else {
+            $("#summAlert").hide();
+        }
+
+    }
+</script>
+

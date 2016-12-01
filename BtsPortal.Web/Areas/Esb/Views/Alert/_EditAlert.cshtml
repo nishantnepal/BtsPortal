@@ -1,0 +1,130 @@
+﻿@model BtsPortal.Entities.Esb.AlertView 
+    @{
+        int counter = 0;
+    }
+
+<div class="modal-dialog modal-lg" style="width: 80%" data-backdrop="static" id="createAlertModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Edit Alert</h4>
+        </div>
+        <div class="modal-body">
+            <div class="divAlert"></div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">
+                        <b>Application : </b>
+                    </div>
+                    <div class="col-md-9">
+                        @Model.Alert.Name
+                        <input type="hidden" id="alertId" value="@Model.Alert.AlertId"/>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-md-3">
+                        <b>Type : </b>
+                    </div>
+                    <div class="col-md-9">
+                        @Html.EnumDropDownListFor(x => x.Alert.AlertType, "--Choose Type--", new { @class = "form-control input-sm", id = "alertType", @onchange = "alertTypeChanged()" })
+                        <span id="summAlert">
+                            <i>every</i>
+                            @Html.DropDownList("summAlertInterval", (List<SelectListItem>)ViewBag.minutes, new { @class = "form-control input-sm", id = "summAlertInterval" })
+                            <i>minutes</i>
+
+                        </span>
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <h4>Selected Conditions</h4>
+                    <table class="table table-striped" id="tblSelectedConditions">
+                        <tr>
+                            <td>Criteria</td>
+                            <td>Operator</td>
+                            <td>Value</td>
+                            <td></td>
+                        </tr>
+                        
+                        @foreach (var item in Model.AlertConditions)
+                        {
+                            <tr>
+                                <td>
+                                    @item.Criteria
+                                </td>
+                                <td>
+                                    @item.Operation
+                                </td>
+                                <td>
+                                    @item.Value
+                                </td>
+                                <td></td>
+                            </tr>
+                        }
+
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="btnSave" class="btn btn-primary" onclick="saveAlert()">Save</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>
+
+<script type="text/javascript">
+    
+    $(function () {
+        var value = $("#alertType").val();
+        if (value === "2") {
+            $("#summAlert").show();
+        } else {
+            $("#summAlert").hide();
+        }
+    });
+
+    function saveAlert() {
+        var alertId = $('#alertId').val();
+        var alertType = $("#alertType").val();
+        var alertMins = $("#summAlertInterval").val();
+
+        var url = "@Url.Action("SaveAlert", "Alert")";
+        $('#btnSave').prop("disabled", true);
+
+        $.ajax({
+            cache: false,
+            url: url,
+            data: { "alertId": alertId,"alertType": alertType, "alertMins": alertMins },
+            method: "POST",
+            success: function (data, textStatus, jqXHR) {
+                if (data.Success === true) {
+                    window.location.reload();
+
+                } else {
+                    alert(data.Error);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('unexpected error in "loadLogs" method.');
+            }
+        });
+
+    }
+
+    function alertTypeChanged() {
+        var value = $("#alertType").val();
+        if (value === "2") {
+            $("#summAlert").show();
+        } else {
+            $("#summAlert").hide();
+        }
+
+    }
+</script>
+
+

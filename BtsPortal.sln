@@ -1,0 +1,98 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{D42B49E7-2113-4DC9-BA1B-A25CA662527B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DBA8F094-EC93-44F1-BF0D-D74524B147CF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{A839EED1-3773-44A9-8279-4D2D4F41F0DF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{7A041263-0C6A-4A58-BFFC-F8D5CC9F792C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BtsPortal.Entities", "BtsPortal.Entities\BtsPortal.Entities.csproj", "{BD3C5239-675F-410B-9C3B-05DE2189192F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BtsPortal.Cache", "BtsPortal.Cache\BtsPortal.Cache.csproj", "{F8614079-0032-4F92-937C-9F9FC34F3B9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BtsPortal.Repositories", "BtsPortal.Repositories\BtsPortal.Repositories.csproj", "{A28077ED-8FBC-4BF7-AB03-428F3CF5C62A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BtsPortal.Helpers", "BtsPortal.Helpers\BtsPortal.Helpers.csproj", "{3C0847F9-BA4D-4473-87D5-42164F1D94DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BtsPortal.Services.EsbAlert", "BtsPortal.Services.EsbAlert\BtsPortal.Services.EsbAlert.csproj", "{A5F12497-20D9-4658-BECA-E3F03A6CACD2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BtsPortal.Web", "BtsPortal.Web\BtsPortal.Web.csproj", "{34859C68-C59A-46B8-874E-EEAB0218B9F0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "assemblies", "assemblies", "{D9079607-A0D3-47D7-BF07-4FCC25349E92}"
+	ProjectSection(SolutionItems) = preProject
+		assemblies\SSOSettingsFileReader.dll = assemblies\SSOSettingsFileReader.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{9890E4D8-26EB-4D24-9F89-371995A3A576}"
+	ProjectSection(SolutionItems) = preProject
+		sql\BtsPortalDb.sql = sql\BtsPortalDb.sql
+		sql\Esb_Exception_DB_Updates.sql = sql\Esb_Exception_DB_Updates.sql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "todos", "todos", "{C69FE1CA-ADAC-45E0-871F-457D4EEE7DA4}"
+	ProjectSection(SolutionItems) = preProject
+		todo.txt = todo.txt
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BtsPortal.Repositories.Test", "Tests\BtsPortal.Repositories.Test\BtsPortal.Repositories.Test.csproj", "{61D9B20A-82A2-48A4-BAC6-85705B7006F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BtsPortal.Web.Tests", "Tests\BtsPortal.Web.Tests\BtsPortal.Web.Tests.csproj", "{73BC90E4-BAD1-49BE-B980-C432F323D640}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BD3C5239-675F-410B-9C3B-05DE2189192F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD3C5239-675F-410B-9C3B-05DE2189192F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD3C5239-675F-410B-9C3B-05DE2189192F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD3C5239-675F-410B-9C3B-05DE2189192F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8614079-0032-4F92-937C-9F9FC34F3B9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8614079-0032-4F92-937C-9F9FC34F3B9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8614079-0032-4F92-937C-9F9FC34F3B9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8614079-0032-4F92-937C-9F9FC34F3B9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A28077ED-8FBC-4BF7-AB03-428F3CF5C62A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A28077ED-8FBC-4BF7-AB03-428F3CF5C62A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A28077ED-8FBC-4BF7-AB03-428F3CF5C62A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A28077ED-8FBC-4BF7-AB03-428F3CF5C62A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C0847F9-BA4D-4473-87D5-42164F1D94DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C0847F9-BA4D-4473-87D5-42164F1D94DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C0847F9-BA4D-4473-87D5-42164F1D94DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C0847F9-BA4D-4473-87D5-42164F1D94DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5F12497-20D9-4658-BECA-E3F03A6CACD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5F12497-20D9-4658-BECA-E3F03A6CACD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5F12497-20D9-4658-BECA-E3F03A6CACD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5F12497-20D9-4658-BECA-E3F03A6CACD2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34859C68-C59A-46B8-874E-EEAB0218B9F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34859C68-C59A-46B8-874E-EEAB0218B9F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34859C68-C59A-46B8-874E-EEAB0218B9F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34859C68-C59A-46B8-874E-EEAB0218B9F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61D9B20A-82A2-48A4-BAC6-85705B7006F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61D9B20A-82A2-48A4-BAC6-85705B7006F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61D9B20A-82A2-48A4-BAC6-85705B7006F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61D9B20A-82A2-48A4-BAC6-85705B7006F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73BC90E4-BAD1-49BE-B980-C432F323D640}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73BC90E4-BAD1-49BE-B980-C432F323D640}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73BC90E4-BAD1-49BE-B980-C432F323D640}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73BC90E4-BAD1-49BE-B980-C432F323D640}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BD3C5239-675F-410B-9C3B-05DE2189192F} = {D42B49E7-2113-4DC9-BA1B-A25CA662527B}
+		{F8614079-0032-4F92-937C-9F9FC34F3B9B} = {D42B49E7-2113-4DC9-BA1B-A25CA662527B}
+		{A28077ED-8FBC-4BF7-AB03-428F3CF5C62A} = {D42B49E7-2113-4DC9-BA1B-A25CA662527B}
+		{3C0847F9-BA4D-4473-87D5-42164F1D94DF} = {D42B49E7-2113-4DC9-BA1B-A25CA662527B}
+		{A5F12497-20D9-4658-BECA-E3F03A6CACD2} = {A839EED1-3773-44A9-8279-4D2D4F41F0DF}
+		{34859C68-C59A-46B8-874E-EEAB0218B9F0} = {7A041263-0C6A-4A58-BFFC-F8D5CC9F792C}
+		{61D9B20A-82A2-48A4-BAC6-85705B7006F4} = {DBA8F094-EC93-44F1-BF0D-D74524B147CF}
+		{73BC90E4-BAD1-49BE-B980-C432F323D640} = {DBA8F094-EC93-44F1-BF0D-D74524B147CF}
+	EndGlobalSection
+EndGlobal

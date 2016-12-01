@@ -1,0 +1,396 @@
+﻿@using BtsPortal.Entities.Bts
+@model BtsPortal.Entities.Bts.BtsParty
+<br />
+<br />
+<style type="text/css">
+    .modal .modal-body {
+        max-height: 600px;
+        max-width: 900px;
+        overflow-y: auto;
+    }
+</style>
+
+<div class="container" style="font-size: 11px;">
+@if (@ViewBag.error != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.error
+    </div>
+}
+<div class="row" style="width: 90%">
+    <div class="col-md-12">
+        <table class="table table-responsive table-striped table-font12" style="width: 90%">
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Is Home Org</th>
+                <th>Send Ports</th>
+            </tr>
+            <tr>
+                <td>@Model.PartnerId</td>
+                <td>@Model.Name</td>
+                <td>@Model.IsHomeOrganization</td>
+                <td>@string.Join(", ", Model.SendPorts)</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<br/>
+<div class="row">
+    <div class="col-md-12">
+        <div class="pull-left">
+            <select id="ddlProfile" class="form-control input-sm">
+                <option value="">Select a profile</option>
+                @foreach (var profile in Model.BusinessProfiles)
+                {
+                    <option value="@profile.Id">@profile.Name</option>
+                }
+            </select>
+        </div>
+    </div>
+</div>
+@foreach (var profile in Model.BusinessProfiles)
+{
+    <div class="container profiles" id="@string.Concat("profile", profile.Id)">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-responsive table-striped table-font12" style="width: 90%">
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Identities</th>
+                    </tr>
+                    <tr>
+                        <td>@profile.Id</td>
+                        <td>@profile.Name</td>
+                        <td>@profile.Description</td>
+                        <td>
+                            <table class="table table-condensed table-responsive table-font11">
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Qualifier</th>
+                                    <th>Value</th>
+                                </tr>
+                                @foreach (var identity in profile.ProfileIdentities)
+                                {
+                                    <tr>
+                                        <td>@identity.Description</td>
+                                        <td>@identity.Qualifier</td>
+                                        <td>@identity.Value</td>
+                                    </tr>
+                                }
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="pull-left">
+                <h4>Agreements</h4>
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-md-12">
+                <table class="table table-responsive table-striped table-font12 table-condensed" style="width: 90%">
+                    <tr>
+                        <th>Enabled</th>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Protocol</th>
+                        <th>Sender</th>
+                        <th>Receiver</th>
+                        <th></th>
+                    </tr>
+                    @foreach (var agreement in profile.Agreements)
+                    {
+                        <tr>
+                            <td>@agreement.Enabled</td>
+                            <td>@agreement.AgreementId</td>
+                            <td>@agreement.Name</td>
+                            <td>@agreement.Description</td>
+                            <td>@agreement.Protocol</td>
+                            <td>@agreement.SendingPartner (@agreement.SendingProfile)</td>
+                            <td>@agreement.ReceivingPartner (@agreement.ReceivingProfile)</td>
+                            <td>
+                                <button class="btn btn-xs btn-primary" data-toggle="modal" data-target="@string.Concat("#oneWayAgrModal", agreement.AgreementId)">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                </button>
+                            </td>
+
+                        </tr>
+
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+
+    foreach (var agreement in profile.Agreements)
+    {
+        <div class="modal oneWayAgrModals" id="@string.Concat("oneWayAgrModal", agreement.AgreementId)" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog modal-lg " role="document" id="modalDialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">
+                One Way Agreements for @agreement.Name
+            </h4>
+        </div>
+        <div class="modal-body" id="modalBody">
+        <div class="row">
+        <div class="col-lg-12">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a data-toggle="tab" href="#toPartner">@($"{agreement.HomeOrgToPartnerOneWayAgreement.SendingPartnerName} to {agreement.HomeOrgToPartnerOneWayAgreement.ReceivingPartnerName}")</a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#fromPartner">@($"{agreement.PartnerToHomeOrgOneWayAgreement.SendingPartnerName} to {agreement.PartnerToHomeOrgOneWayAgreement.ReceivingPartnerName}")</a>
+            </li>
+
+        </ul>
+        <div class="tab-content">
+        <div class="container tab-pane fade in active" id="toPartner">
+            <br/>
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="list-group-sm">
+                        <a class="list-group-item-sm active" href="#">&nbsp; Batches</a>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <div id="batches" class="agrVwPort">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="pull-left">
+                                    <select id="@string.Concat("ddlBatch", agreement.AgreementId)" class="form-control input-sm" onchange="showBatch('@string.Concat("ddlBatch", agreement.AgreementId)')">
+                                        <option value="">Select a batch</option>
+                                        @foreach (var batch in agreement.HomeOrgToPartnerOneWayAgreement.Batches)
+                                        {
+                                            <option value="@batch.Id">@batch.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <span style="color: blue" id="divStatus2"></span>
+                        </div>
+
+                        @foreach (var batch in agreement.HomeOrgToPartnerOneWayAgreement.Batches)
+                        {
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="@string.Concat("batch", batch.Id)" class="batches">
+                                        <br/>
+                                        <div class="btn-group btn-group-sm">
+                                            @if (batch.Status == BtsEdiBatchOrchestrationStatus.PendingStart)
+                                            {
+                                                <button id="@string.Concat("btnRefresh", batch.Id)" class="btn btn-sm btn-primary " onclick="
+batchStatusAction('@BtsEdiBatchOrchestrationAction.Refresh', '@batch.Id', '@batch.Name', '@agreement.Name',
+    '@agreement.HomeOrgToPartnerOneWayAgreement.SendingPartnerName',    '@agreement.HomeOrgToPartnerOneWayAgreement.ReceivingPartnerName',    '@agreement.HomeOrgToPartnerOneWayAgreement.Id')">Refresh</button>
+                                                <button id="@string.Concat("btnStart", batch.Id)" class="btn btn-sm btn-success @string.Concat("batch", batch.Id)" disabled="disabled" onclick="batchStatusAction('@BtsEdiBatchOrchestrationAction.Start', '@batch.Id', '@batch.Name', '@agreement.Name', '@agreement.HomeOrgToPartnerOneWayAgreement.SendingPartnerName', '@agreement.HomeOrgToPartnerOneWayAgreement.ReceivingPartnerName', '@agreement.HomeOrgToPartnerOneWayAgreement.Id')">Start</button>
+                                                <button id="@string.Concat("btnStop", batch.Id)" class="btn btn-sm btn-danger @string.Concat("batch", batch.Id)" disabled="disabled" onclick="batchStatusAction('@BtsEdiBatchOrchestrationAction.Stop', '@batch.Id', '@batch.Name', '@agreement.Name', '@agreement.HomeOrgToPartnerOneWayAgreement.SendingPartnerName', '@agreement.HomeOrgToPartnerOneWayAgreement.ReceivingPartnerName', '@agreement.HomeOrgToPartnerOneWayAgreement.Id')">Stop</button>
+                                                <button id="@string.Concat("btnOverride", batch.Id)" class="btn btn-sm btn-warning @string.Concat("batch", batch.Id)" disabled="disabled" onclick="batchStatusAction('@BtsEdiBatchOrchestrationAction.Override', '@batch.Id', '@batch.Name', '@agreement.Name', '@agreement.HomeOrgToPartnerOneWayAgreement.SendingPartnerName', '@agreement.HomeOrgToPartnerOneWayAgreement.ReceivingPartnerName', '@agreement.HomeOrgToPartnerOneWayAgreement.Id')">Override</button>
+                                            }
+                                            else if (batch.Status == BtsEdiBatchOrchestrationStatus.Stopped)
+                                            {
+                                                <button id="@string.Concat("btnRefresh", batch.Id)" class="btn btn-sm btn-primary" onclick="batchStatusAction('@BtsEdiBatchOrchestrationAction.Refresh', '@batch.Id', '@batch.Name', '@agreement.Name', '@agreement.HomeOrgToPartnerOneWayAgreement.SendingPartnerName', '@agreement.HomeOrgToPartnerOneWayAgreement.ReceivingPartnerName', '@agreement.HomeOrgToPartnerOneWayAgreement.Id')">Refresh</button>
+                                                <button id="@string.Concat("btnStart", batch.Id)" class="btn btn-sm btn-success @string.Concat("batch", batch.Id)" onclick="batchStatusAction('@BtsEdiBatchOrchestrationAction.Start', '@batch.Id', '@batch.Name', '@agreement.Name', '@agreement.HomeOrgToPartnerOneWayAgreement.SendingPartnerName', '@agreement.HomeOrgToPartnerOneWayAgreement.ReceivingPartnerName', '@agreement.HomeOrgToPartnerOneWayAgreement.Id')">Start</button>
+                                                <button id="@string.Concat("btnStop", batch.Id)" class="btn btn-sm btn-danger @string.Concat("batch", batch.Id)" disabled="disabled" onclick="batchStatusAction('@BtsEdiBatchOrchestrationAction.Stop', '@batch.Id', '@batch.Name', '@agreement.Name', '@agreement.HomeOrgToPartnerOneWayAgreement.SendingPartnerName', '@agreement.HomeOrgToPartnerOneWayAgreement.ReceivingPartnerName', '@agreement.HomeOrgToPartnerOneWayAgreement.Id')">Stop</button>
+                                                <button id="@string.Concat("btnOverride", batch.Id)" class="btn btn-sm btn-warning @string.Concat("batch", batch.Id)" disabled="disabled" onclick="batchStatusAction('@BtsEdiBatchOrchestrationAction.Override', '@batch.Id', '@batch.Name', '@agreement.Name', '@agreement.HomeOrgToPartnerOneWayAgreement.SendingPartnerName', '@agreement.HomeOrgToPartnerOneWayAgreement.ReceivingPartnerName', '@agreement.HomeOrgToPartnerOneWayAgreement.Id')">Override</button>
+                                            }
+                                            else
+                                            {
+                                                <button id="@string.Concat("btnRefresh", batch.Id)" class="btn btn-sm btn-primary" onclick="batchStatusAction('@BtsEdiBatchOrchestrationAction.Refresh', '@batch.Id', '@batch.Name', '@agreement.Name', '@agreement.HomeOrgToPartnerOneWayAgreement.SendingPartnerName', '@agreement.HomeOrgToPartnerOneWayAgreement.ReceivingPartnerName', '@agreement.HomeOrgToPartnerOneWayAgreement.Id')">Refresh</button>
+                                                <button id="@string.Concat("btnStart", batch.Id)" class="btn btn-sm btn-success @string.Concat("batch", batch.Id)" disabled="disabled" onclick="batchStatusAction('@BtsEdiBatchOrchestrationAction.Start', '@batch.Id', '@batch.Name', '@agreement.Name', '@agreement.HomeOrgToPartnerOneWayAgreement.SendingPartnerName', '@agreement.HomeOrgToPartnerOneWayAgreement.ReceivingPartnerName', '@agreement.HomeOrgToPartnerOneWayAgreement.Id')">Start</button>
+                                                <button id="@string.Concat("btnStop", batch.Id)" class="btn btn-sm btn-danger @string.Concat("batch", batch.Id)" onclick="batchStatusAction('@BtsEdiBatchOrchestrationAction.Stop', '@batch.Id', '@batch.Name', '@agreement.Name', '@agreement.HomeOrgToPartnerOneWayAgreement.SendingPartnerName', '@agreement.HomeOrgToPartnerOneWayAgreement.ReceivingPartnerName', '@agreement.HomeOrgToPartnerOneWayAgreement.Id')">Stop</button>
+                                                <button id="@string.Concat("btnOverride", batch.Id)" class="btn btn-sm btn-warning @string.Concat("batch", batch.Id)" onclick="batchStatusAction('@BtsEdiBatchOrchestrationAction.Override', '@batch.Id', '@batch.Name', '@agreement.Name', '@agreement.HomeOrgToPartnerOneWayAgreement.SendingPartnerName', '@agreement.HomeOrgToPartnerOneWayAgreement.ReceivingPartnerName', '@agreement.HomeOrgToPartnerOneWayAgreement.Id')">Override</button>
+                                            }
+                                        </div>
+                                        <br/>
+                                        <table class="table table-condensed table-striped" style="width: 65%">
+                                            <tr>
+                                                <th></th>
+                                                <th>Id</th>
+                                                <th>Orchestration</th>
+                                                <th>Name</th>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <div id="@string.Concat("batchStatus", batch.Id)" title="@batch.Status.ToString()">
+                                                        @switch (batch.Status)
+                                                        {
+                                                            case BtsEdiBatchOrchestrationStatus.PendingStart:
+                                                                <i class="fa fa-check-circle fa-2" style="color: yellow"></i>
+                                                                break;
+                                                            case BtsEdiBatchOrchestrationStatus.Stopped:
+                                                                <i class="fa fa-exclamation-circle fa-2" aria-hidden="true" style="color: red"></i>
+                                                                break;
+                                                            case BtsEdiBatchOrchestrationStatus.Started:
+                                                                <i class="fa fa-check-circle fa-2" style="color: green"></i>
+                                                                break;
+                                                            case BtsEdiBatchOrchestrationStatus.PendingControlMessageProcessing:
+                                                                <i class="fa fa-exclamation-circle fa-2" style="color: yellow"></i>
+                                                                break;
+                                                            default:
+                                                                <i class="fa fa-check-circle fa-2" style="color: green"></i>
+                                                                break;
+                                                        }
+                                                    </div>
+                                                </td>
+                                                <td>@batch.Id</td>
+                                                <td>@batch.OrchestrationId</td>
+                                                <td>@batch.Name</td>
+                                            </tr>
+                                        </table>
+
+                                        <hr/>
+                                        <h5>Filters</h5>
+                                        <table class="table table-condensed table-striped" style="width: 65%">
+                                            <tr>
+                                                <th>Property</th>
+                                                <th>Operator</th>
+                                                <th>Value</th>
+                                            </tr>
+                                            @foreach (var filter in batch.FilterStatements)
+                                            {
+                                                <tr>
+                                                    <td style="width: 30%">
+                                                        @filter.Property
+
+                                                    </td>
+                                                    <td style="width: 10%">
+                                                        @filter.BatchFilterOperator.ToString()
+                                                    </td>
+                                                    <td style="width: 60%">
+                                                        <span class="span-width-100">@filter.FilterValue</span>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </table>
+                                        <hr/>
+                                        <h5>Release Criteria</h5>
+                                        <table class="table table-condensed" style="width: 65%">
+                                            <tr>
+                                                <th>Type</th>
+                                                <th></th>
+                                            </tr>
+                                            <tr>
+                                                <td style="width: 30%">
+                                                    @batch.ReleaseCriteria.Type
+                                                </td>
+                                                <td style="width: 70%">
+                                                    @if (batch.ReleaseCriteria.CriteriaMessageCount != null)
+                                                    {
+                                                        <table class="table table-font11 table-striped table-responsive">
+                                                            <tr>
+                                                                <td>Scope</td>
+                                                                <td>@batch.ReleaseCriteria.CriteriaMessageCount.Scope.ToString()</td>
+
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Message Count</td>
+                                                                <td>@batch.ReleaseCriteria.CriteriaMessageCount.MessageCount</td>
+
+                                                            </tr>
+                                                        </table>
+                                                    }
+                                                    else if (batch.ReleaseCriteria.CriteriaInterchangeSize != null)
+                                                    {
+                                                        <table class="table table-font11 table-striped table-responsive">
+                                                            <tr>
+                                                                <td>Character Count</td>
+                                                                <td>@batch.ReleaseCriteria.CriteriaInterchangeSize.CharacterCount</td>
+                                                            </tr>
+
+                                                        </table>
+                                                    }
+                                                    else if (batch.ReleaseCriteria.CriteriaTimeBasedRelease != null)
+                                                    {
+                                                        <table class="table table-font11 table-striped table-responsive">
+                                                            <tr>
+                                                                <td>FirstRelease</td>
+                                                                <td>@batch.ReleaseCriteria.CriteriaTimeBasedRelease.FirstRelease</td>
+
+                                                            </tr>
+                                                            <tr>
+                                                                <td>SendEmptyBatchSignal</td>
+                                                                <td>@batch.ReleaseCriteria.CriteriaTimeBasedRelease.SendEmptyBatchSignal</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>RecurrencePeriod</td>
+                                                                <td>@batch.ReleaseCriteria.CriteriaTimeBasedRelease.RecurrencePeriod</td>
+                                                            </tr>
+                                                        </table>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>n/a</span>
+                                                    }
+
+                                                </td>
+
+                                            </tr>
+                                        </table>
+                                        <hr/>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="container tab-pane fade" id="fromPartner">
+            <br/>
+
+        </div>
+
+
+        </div>
+        </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+        </div>
+        <!-- /.modal-content -->
+        </div>
+        </div>
+
+
+
+    }
+}
+
+
+</div>
+
+<input type="hidden" id="ediBatchStatusOpUrl" value="@Url.Action("UpdateEdiBatchStatus", "BtsOps")" />
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        $(".profiles").hide();
+        $(".batches").hide();
+        $('.oneWayAgrModals').modal('hide');
+
+        $("#ddlProfile").change(function () {
+            var value = $("#ddlProfile").val();
+            $(".profiles").hide();
+            $("#profile" + value).show();
+        });
+
+
+    });
+
+    
+</script>

@@ -1,0 +1,220 @@
+﻿@using BtsPortal.Entities.Esb
+@using BtsPortal.Web.Infrastructure.Settings
+@model BtsPortal.Entities.Esb.EsbUserAlertSubscription
+@{
+    ViewBag.Title = "Alert";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string currentAlertName = string.Empty;
+    string currentAlertName2 = string.Empty;
+}
+
+<h2> ESB Alert</h2>
+<br />
+<div class="container container-fluid">
+    <div class="row">
+        <div class="col-lg-12 pull-right">
+            <button class="btn btn-primary" onclick="createAlert()">New Alert</button>
+        </div>
+    </div>
+    <br />
+    <div class="row" id="divAlert">
+
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a data-toggle="tab" href="#alerts">All Alerts</a>
+                </li>
+                <li>
+                    <a data-toggle="tab" href="#alertSubs">My Subscriptions</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="container tab-pane fade in active" id="alerts">
+                    <br />
+                    <table class="table table-hover table-responsive table-striped table-font12">
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Condition</th>
+                            <th>Owner</th>
+                            <th>Create Date</th>
+                            <th>Subscribers</th>
+                            <th></th>
+                        </tr>
+                        @foreach (var item in Model.Alerts.OrderBy(m => m.Name))
+                        {
+                            <tr>
+                                <td>
+                                    @if (!string.Equals(currentAlertName, item.Name, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        currentAlertName = item.Name;
+                                        <b>@item.Name</b>
+                                    }
+                                </td>
+                                <td>
+
+                                    @if (item.IsSummaryAlert)
+                                    {
+                                        <span class="span-width-100">@string.Concat(AlertType.Summary.ToString(), " (", item.IntervalMins, " mins)")</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="span-width-100">@AlertType.Transactional.ToString()</span>
+                                    }
+
+
+                                </td>
+                                <td>
+                                    <span class="span-width-250">@item.ConditionsString</span>
+
+                                </td>
+                                <td>
+                                    <span class="span-width-100">@item.InsertedBy</span>
+                                </td>
+                                <td>
+                                    <span class="span-width-100">@item.InsertedDate.ToString(AppSettings.DateTimeDisplay)</span>
+
+                                </td>
+                                <td title="@item.Subscribers">
+                                    <span style="cursor: pointer; color: blue">@item.TotalSubscriberCount</span>
+
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-success btn-xs" onclick="subscribe('@item.AlertId')" title="Subscribe">
+                                        <i class="fa fa-plus-square" aria-hidden="true"></i>
+                                    </button>
+                                    @if (item.InsertedBy == Model.CurrentUser)
+                                    {
+                                        <button type="button" class="btn btn-primary btn-xs" onclick="editAlert('@item.AlertId')" title="Edit">
+                                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn btn-primary btn-xs" onclick="editAlert('@item.AlertId')" title="Edit" disabled="disabled">
+                                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                                        </button>
+                                    }
+                                    @if (item.AlertSubscriptions.Count == 0 && item.InsertedBy.ToUpper() == Model.CurrentUser.ToUpper())
+                                    {
+                                        <button type="button" class="btn btn-danger btn-xs" onclick="deleteAlert('@item.AlertId')" title="Delete">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn btn-danger btn-xs" title="Delete" disabled="disabled">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                        </button>
+                                    }
+
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+
+                <div class="container tab-pane fade" id="alertSubs">
+                    <br />
+                    <table class="table table-hover table-responsive table-striped table-font12">
+                        <tr>
+                            <th>Alert</th>
+                            <th>Conditions</th>
+                            <th>Custom Email</th>
+                            @*<th>Inserted By</th>
+                                <th>Inserted Date</th>*@
+
+                            <th>Active</th>
+                            <th></th>
+                        </tr>
+                        @foreach (var item in Model.MyAlertSubscriptions)
+                        {
+                            <tr>
+                                <td>
+                                    @if (!string.Equals(currentAlertName2, item.Name, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        currentAlertName2 = item.Name;
+                                        <b>@item.Name</b>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="span-width-250">@item.ConditionsString</span>
+                                </td>
+                                <td>@item.CustomEmail</td>
+                                <td>
+                                    @if (item.Active)
+                                    {
+                                        <input type="checkbox" data-size="mini" class="bootstrapSwitch" data-value="@item.AlertSubscriptionId" data-on-text="YES" data-off-text="NO" value="@item.Active" checked="checked" />
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" data-size="mini" class="bootstrapSwitch" data-value="@item.AlertSubscriptionId" data-on-text="YES" data-off-text="NO" value="@item.Active" />
+                                    }
+
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-xs" onclick="deleteAlertSubscription('@item.AlertSubscriptionId')" title="Delete">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="createAlertModal" class="modal fade" role="dialog">
+
+</div>
+
+<div id="confirmActionModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Please confirm your selection.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-primary" id="btnProceed">Proceed</button>
+                <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<input type="hidden" id="createAlertUrl" value="@Url.Action("CreateAlert","Alert")" />
+<input type="hidden" id="editAlertUrl" value="@Url.Action("EditAlert", "Alert")" />
+<input type="hidden" id="deleteSubsUrl" value="@Url.Action("DeleteSubscription", "Alert")" />
+<input type="hidden" id="deleteAlertUrl" value="@Url.Action("DeleteAlert", "Alert")" />
+<input type="hidden" id="toggleSubsUrl" value="@Url.Action("ToggleSubscriptionState", "Alert")" />
+<input type="hidden" id="subsribeUrl" value="@Url.Action("AddSubscription", "Alert")"/>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(function () {
+            $(".bootstrapSwitch").bootstrapSwitch();
+
+            $('.bootstrapSwitch')
+                .on('switchChange.bootstrapSwitch',
+                    function (event, state) {
+                        var subsId = $(this).attr('data-value');
+                        //alert(subsId);
+                        toggleAlertSubscription(subsId, state);
+                    });
+        });
+    </script>
+    <script src="~/Scripts/site-esb.js"></script>
+
+}

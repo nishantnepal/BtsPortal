@@ -1,0 +1,86 @@
+﻿@using BtsPortal.Web
+<!DOCTYPE html>
+<link rel="icon" href="@Url.Content("~/favicon.ico")"/>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - IA BTS</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+</head>
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="~/Home" class="navbar-left navbar-brand">
+                <img src="~/Images/company-logo.gif"/>
+            </a>
+            @*@Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">
+                        ESB
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li>@Html.ActionLink("Fault Summary", "Summary", "Fault", new {area = "Esb"}, null)</li>
+                        <li>@Html.ActionLink("Fault Search", "Index", "Fault", new {area = "Esb"}, null)</li>
+                        <li>@Html.ActionLink("Alert", "Index", "Alert", new {area = "Esb"}, null)</li>
+                        <li>@Html.ActionLink("Settings", "Index", "FaultSettings", new {area = "Esb"}, null)</li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">
+                        BTS
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li>@Html.ActionLink("Dashboard", "Home", "Dashboard", new {area = "Bts"}, null)</li>
+                        <li>@Html.ActionLink("Instance Search", "Index", "Detail", new {area = "Bts"}, null)</li>
+
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">
+                        BAM
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li>@Html.ActionLink("Activities", "Index", "Activity", new { area = "Bam" }, null)</li>
+                        <li>@Html.ActionLink("Manage", "Index", "Admin", new { area = "Bam" }, null)</li>
+
+                    </ul>
+                </li>
+            </ul>
+            <p class="nav navbar-text navbar-right">@User.Identity.Name</p>
+        </div>
+    </div>
+</div>
+<div class="container body-content">
+    @RenderBody()
+    <hr/>
+    <footer>
+        <p>
+            &copy; @DateTime.Now.Year - Innovative Architects, 3122 Hill St. Duluth, GA, 30096, USA
+            <br/>
+            <span>[v @typeof(MvcApplication).Assembly.GetName().Version]</span>
+
+        </p>
+    </footer>
+</div>
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+@RenderSection("scripts", required: false)
+</body>
+</html>
+

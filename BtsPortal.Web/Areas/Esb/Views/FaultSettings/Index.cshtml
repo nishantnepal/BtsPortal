@@ -1,0 +1,130 @@
+﻿@using BtsPortal.Web.Extensions
+@model List<BtsPortal.Entities.Esb.EsbConfiguration>
+
+@{
+    ViewBag.Title = "Esb Settings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<string> boolList = new List<string>() { "AuditSave", "AuditSuccessfulResubmit", "AuditUnsuccessfulResubmit", "IsEmailEnabled", "IsQueueEnabled", "IsSummaryQueueEnabled", "SmtpEnableSsl" };
+}
+
+<h2>Esb Configuration</h2>
+
+<div class="container container-fluid">
+    <table class="table table-responsive table-striped table-hover">
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>Value</th>
+            <th></th>
+        </tr>
+        @foreach (var item in Model.OrderBy(m => m.Name))
+        {
+            <tr>
+                <td>
+                    <div data-toggle="tooltip" data-html="true" data-placement="top" title="@item.Description">
+                        @Html.EditorFor(model => item.Name, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                    </div>
+                </td>
+                <td>
+                    @if (boolList.Contains(item.Name))
+                    {
+                        // @Html.EditorFor(model => item.Value, new { htmlAttributes = new { @class = "form-control", @id = @item.ConfigurationID.ToString().RemoveNonAlphaNumeric() } })
+                        @Html.DropDownList(item.ConfigurationID.ToString().RemoveNonAlphaNumeric(), new List<SelectListItem>() {
+                                    new SelectListItem()
+                                        {
+                                            Text = "False",
+                                        Value = "false",
+                                        Selected = item.Value=="false"
+                                        } ,
+                                   new SelectListItem()
+                                        {
+                                            Text = "True",Value = "true",Selected = item.Value=="true"
+                                        } }, new { @class = "form-control", @id = @item.ConfigurationID.ToString().RemoveNonAlphaNumeric() })
+                    }
+                    else
+                    {
+                        @Html.EditorFor(model => item.Value, new { htmlAttributes = new { @class = "form-control", @id = @item.ConfigurationID.ToString().RemoveNonAlphaNumeric() } })
+                    }
+
+                </td>
+                <td>
+                    <button class="btn btn-xs btn-primary" onclick="updateEsbSetting('@item.ConfigurationID', '@item.ConfigurationID.ToString().RemoveNonAlphaNumeric()')">
+                        <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                    </button>
+                    <span id="@string.Concat("status", item.ConfigurationID.ToString().RemoveNonAlphaNumeric())" style="color:green"></span>
+                </td>
+            </tr>
+        }
+
+        @*<table class="table table-responsive table-striped table-hover">
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>Value</th>
+                <th></th>
+            </tr>
+            @foreach (var item in Model.OrderBy(m => m.Name))
+            {
+                <tr>
+                    <td>
+                        <div data-toggle="tooltip" data-html="true" data-placement="top" title="@item.Description">
+                            @Html.EditorFor(model => item.Name, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+                    </td>
+                    <td>
+                        @Html.EditorFor(model => item.Value, new { htmlAttributes = new { @class = "form-control", @id = @item.ConfigurationID.ToString().RemoveNonAlphaNumeric() } })
+                    </td>
+                    <td>
+                        <button class="btn btn-xs btn-primary" onclick="updateEsbSetting('@item.ConfigurationID', '@item.ConfigurationID.ToString().RemoveNonAlphaNumeric()')">
+                            <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                        </button>
+                        <span id="@string.Concat("status", item.ConfigurationID.ToString().RemoveNonAlphaNumeric())" style="color:green"></span>
+                    </td>
+                </tr>
+            }*@
+    </table>
+</div>
+
+
+@section Scripts{
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+
+        function updateEsbSetting(configurationId, valueId) {
+            var url = "@Url.Action("UpdateEsbSetting", "FaultSettings")"; //"/portal/Bts/Dashboard/Summary";
+            var value = $('#' + valueId).val();
+            waitingDialog.show();
+            $.ajax({
+                url: url,
+                data: { "configurationId": configurationId, "value": value },
+                method: "POST",
+                success: function (data, textStatus, jqXHR) {
+                    if (data.Success === true) {
+                        $("#status" + valueId).text('Saved');
+                    } else {
+                        $("#divStatus")
+                            .removeClass("alert-success")
+                            .addClass("alert")
+                            .addClass("alert-danger")
+                            .html(data.Error);
+                    }
+                    waitingDialog.hide();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('unexpected error.');
+                    waitingDialog.hide();
+                }
+            });
+
+        }
+    </script>
+}
+
+
+
+

@@ -1,0 +1,43 @@
+﻿<h3>
+    Parties
+    &nbsp;&nbsp;
+    <a class="btn btn-sm btn-primary" href="#" onclick="loadEdiPartyData2()"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i>&nbsp; Refresh</a>
+</h3>
+
+<div class="container pull-left" style="width: 90%">
+    <div class="row">
+        <div class="col-sm-3 col-md-3 pull-left">
+            <select id="ddlParty" class="selectpicker form-control input-sm" data-live-search="true" data-url="@Url.Action("EdiParty", "Dashboard")">
+            <option value="">Select a party</option>
+            @foreach (var party in (List<BtsParty>)ViewBag.apps)
+            {
+                    <option value="@party.Name" data-tokens="@party.Identities @party.Name">@party.Name</option>
+
+            }
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12" id="appData">
+
+        </div>
+
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('.selectpicker').selectpicker({
+            style: 'btn-default',
+            liveSearchPlaceholder: 'Party Name or Identifier',
+            size: 10
+        });
+
+        $('#ddlParty').on('changed.bs.select', function (e) {
+            var value = $('#ddlParty').selectpicker('val');
+            loadEdiPartyData(value);
+        });
+
+    });
+</script>

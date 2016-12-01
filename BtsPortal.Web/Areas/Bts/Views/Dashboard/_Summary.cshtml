@@ -1,0 +1,137 @@
+﻿@using BtsPortal.Entities.Bts
+@using BtsPortal.Web.Extensions
+@using BtsPortal.Web.Infrastructure.Settings
+@model BtsPortal.Entities.Bts.BtsSummary
+<h3>
+    Summary
+    &nbsp;&nbsp;
+    <a class="btn btn-sm btn-primary" href="#" onclick="loadSummary()"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i>&nbsp; Refresh</a>
+</h3>
+
+<div class="container pull-left" style="width:90%">
+
+    @if (@ViewBag.error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.error
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped table-font11">
+                <tr>
+                    <th>Application</th>
+                    <th>Ready To Run</th>
+                    <th>Running</th>
+                    <th>Dehydrated</th>
+                    <th>Suspended Resumable</th>
+                    <th>Suspended Non Resumable</th>
+                </tr>
+                @foreach (var item in Model.AppSummaries)
+                {
+                    var minSrDate = (from date in Model.AppSummaryDates
+                                     where date.ApplicationId == item.ApplicationId && date.InstanceStatus == BtsInstanceStatus.SuspendedResumable
+                                     select date.MinDate).FirstOrDefault();
+                    var minSrDateDisplay = minSrDate.HasValue ? minSrDate.ToLocalDateTime().GetValueOrDefault().ToString(AppSettings.DateTimeDisplay) : "n/a";
+                    var maxSrDate = (from date in Model.AppSummaryDates
+                                     where date.ApplicationId == item.ApplicationId && date.InstanceStatus == BtsInstanceStatus.SuspendedResumable
+                                     select date.MaxDate).FirstOrDefault();
+                    var maxSrDateDisplay = maxSrDate.HasValue ? maxSrDate.ToLocalDateTime().GetValueOrDefault().ToString(AppSettings.DateTimeDisplay) : "n/a";
+
+
+                    var minSnrDate = (from date in Model.AppSummaryDates
+                                      where date.ApplicationId == item.ApplicationId && date.InstanceStatus == BtsInstanceStatus.SuspendedNonResumable
+                                      select date.MinDate).FirstOrDefault();
+                    var minSnrDateDisplay = minSnrDate.HasValue ? minSnrDate.ToLocalDateTime().GetValueOrDefault().ToString(AppSettings.DateTimeDisplay) : "n/a";
+                    var maxSnrDate = (from date in Model.AppSummaryDates
+                                      where date.ApplicationId == item.ApplicationId && date.InstanceStatus == BtsInstanceStatus.SuspendedNonResumable
+                                      select date.MaxDate).FirstOrDefault();
+                    var maxSnrDateDisplay = maxSnrDate.HasValue ? maxSnrDate.ToLocalDateTime().GetValueOrDefault().ToString(AppSettings.DateTimeDisplay) : "n/a";
+
+                    var minRunDate = (from date in Model.AppSummaryDates
+                                      where date.ApplicationId == item.ApplicationId && date.InstanceStatus == BtsInstanceStatus.Running
+                                      select date.MinDate).FirstOrDefault();
+                    var minRunDateDisplay = minRunDate.HasValue ? minRunDate.ToLocalDateTime().GetValueOrDefault().ToString(AppSettings.DateTimeDisplay) : "n/a";
+                    var maxRunDate = (from date in Model.AppSummaryDates
+                                      where date.ApplicationId == item.ApplicationId && date.InstanceStatus == BtsInstanceStatus.Running
+                                      select date.MaxDate).FirstOrDefault();
+                    var maxRunDateDisplay = maxRunDate.HasValue ? maxRunDate.ToLocalDateTime().GetValueOrDefault().ToString(AppSettings.DateTimeDisplay) : "n/a";
+
+                    var minDehDate = (from date in Model.AppSummaryDates
+                                      where date.ApplicationId == item.ApplicationId && date.InstanceStatus == BtsInstanceStatus.Dehydrated
+                                      select date.MinDate).FirstOrDefault();
+                    var minDehDateDisplay = minDehDate.HasValue ? minDehDate.ToLocalDateTime().GetValueOrDefault().ToString(AppSettings.DateTimeDisplay) : "n/a";
+                    var maxDehDate = (from date in Model.AppSummaryDates
+                                      where date.ApplicationId == item.ApplicationId && date.InstanceStatus == BtsInstanceStatus.Dehydrated
+                                      select date.MaxDate).FirstOrDefault();
+                    var maxDehDateDisplay = maxDehDate.HasValue ? maxDehDate.ToLocalDateTime().GetValueOrDefault().ToString(AppSettings.DateTimeDisplay) : "n/a";
+
+                    var minRtrDate = (from date in Model.AppSummaryDates
+                                      where date.ApplicationId == item.ApplicationId && date.InstanceStatus == BtsInstanceStatus.ReadyToRun
+                                      select date.MinDate).FirstOrDefault();
+                    var minRtrDateDisplay = minRtrDate.HasValue ? minRtrDate.ToLocalDateTime().GetValueOrDefault().ToString(AppSettings.DateTimeDisplay) : "n/a";
+                    var maxRtrDate = (from date in Model.AppSummaryDates
+                                      where date.ApplicationId == item.ApplicationId && date.InstanceStatus == BtsInstanceStatus.ReadyToRun
+                                      select date.MaxDate).FirstOrDefault();
+                    var maxRtrDateDisplay = maxRtrDate.HasValue ? maxRtrDate.ToLocalDateTime().GetValueOrDefault().ToString(AppSettings.DateTimeDisplay) : "n/a";
+                    <tr>
+                        <td>
+                            <b>
+                                @item.Application
+                            </b>
+                        </td>
+                        <td>
+                            <i class="fa fa-hourglass fa-fw" aria-hidden="true" style="color: yellowgreen"></i>&nbsp; @item.ReadyToRun
+                            <span class="faded" style="display: block;">
+                                min&nbsp;:&nbsp;@minRtrDateDisplay
+                            </span>
+                            <span class="faded" style="display: block;">
+                                max&nbsp;:&nbsp;@maxRtrDateDisplay
+                            </span>
+                        </td>
+                        <td>
+                            <a href="#" onclick="loadApplicationArtifactSummary('@item.ApplicationId', '@BtsInstanceStatus.Running')"><i class="fa fa-refresh fa-fw" aria-hidden="true" style="color: blue"></i>&nbsp; @item.Running</a>
+                            <span class="faded" style="display: block;">
+                                min&nbsp;:&nbsp;@minRunDateDisplay
+                            </span>
+                            <span class="faded" style="display: block;">
+                                max&nbsp;:&nbsp;@maxRunDateDisplay
+                            </span>
+                        </td>
+                        <td>
+                            <a href="#" onclick="loadApplicationArtifactSummary('@item.ApplicationId', '@BtsInstanceStatus.Dehydrated')"><i class="fa fa-check fa-fw" aria-hidden="true" style="color: magenta"></i>&nbsp; @item.Dehydrated</a>
+
+                            <span class="faded" style="display: block;">
+                                min&nbsp;:&nbsp;@minDehDateDisplay
+                            </span>
+                            <span class="faded" style="display: block;">
+                                max&nbsp;:&nbsp;@maxDehDateDisplay
+                            </span>
+                        </td>
+                        <td>
+                            <a href="#" onclick="loadApplicationArtifactSummary('@item.ApplicationId', '@BtsInstanceStatus.SuspendedResumable')"><i class="fa fa-times fa-fw" aria-hidden="true" style="color: red"></i>&nbsp; @item.SuspendedResumable</a>
+                            <span class="faded" style="display: block;">
+                                min&nbsp;:&nbsp;@minSrDateDisplay
+                            </span>
+                            <span class="faded" style="display: block;">
+                                max&nbsp;:&nbsp;@maxSrDateDisplay
+                            </span>
+                        </td>
+                        <td>
+                            <a href="#" onclick="loadApplicationArtifactSummary('@item.ApplicationId','@BtsInstanceStatus.SuspendedNonResumable')"><i class="fa fa-times fa-fw" aria-hidden="true" style="color: red"></i>&nbsp; @item.SuspendedNonResumable</a>
+                            <span class="faded" style="display: block;">
+                                min&nbsp;:&nbsp;@minSnrDateDisplay
+                            </span>
+                            <span class="faded" style="display: block;">
+                                max&nbsp;:&nbsp;@maxSnrDateDisplay
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+        
+    </div>
+</div>
+<input type="hidden" id="appArtSummUrl" value="@Url.Action("AppArtifactsSummary","Dashboard")" />

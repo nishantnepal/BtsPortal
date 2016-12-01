@@ -1,0 +1,84 @@
+﻿@using BtsPortal.Web.Extensions
+@model BtsPortal.Entities.Bts.BtsInstanceMessage
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <a href="#" onclick="displayMessageList()">
+            <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+            &nbsp;Back to messages
+        </a>
+    </div>
+    <div class="panel-body" style="overflow-y: scroll; max-height: 85%; margin-bottom: 50px;">
+        <h5>MessageId : @Model.MessageId</h5>
+        @if (@ViewBag.error != null)
+        {
+            <div class="alert alert-danger">
+                @ViewBag.error
+            </div>
+        }
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a data-toggle="tab" href="#ctx">Context Properties</a>
+            </li>
+            <li>
+                <a data-toggle="tab" href="#data">Data</a>
+            </li>
+
+        </ul>
+        <div class="tab-content">
+            <div class="container tab-pane fade in active table-font12" id="ctx">
+                <br/>
+                <div style="overflow-y: scroll; height: 150px; width: 90%">
+                    <table class="table table-striped table-hover table-font12" style="width: 100%">
+                        <tr>
+                            <th>Name</th>
+                            <th>Namespace</th>
+                            <th>Value</th>
+                            <th>Promoted</th>
+                        </tr>
+                        @foreach (var item in Model.Contexts.OrderByDescending(m => m.Promoted))
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td>@item.Namespace</td>
+                                <td>
+                                    <span class="span-width-200">
+                                        @item.Value
+                                    </span>
+                                </td>
+                                <td>
+                                    @if (item.Promoted)
+                                    {
+                                        <i class="fa fa-arrow-up" aria-hidden="true" style="color: green" title="Promoted"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa fa-arrow-down" aria-hidden="true" title="Not Promoted"></i>
+                                    }
+                                </td>
+
+                            </tr>
+
+                        }
+                    </table>
+                </div>
+            </div>
+
+            <div class="container tab-pane fade table-font12" id="data">
+                <br/>
+                @if (Model.MessageBodyTruncated)
+                {
+                    <div class="alert alert-warning" role="alert" style="width: 90%;">
+                        Data is trucated here for display purposes (too large).
+                        <br/>Please download message to view the entire message.
+                    </div>
+                }
+                <textarea rows="10" style="width: 100%; border: 1px solid #999999; max-width: 1080px; margin: 5px 0; padding: 3px;">
+                    @Model.MessageBody.PrettyXml()
+                </textarea>
+
+            </div>
+        </div>
+    </div>
+</div>
+

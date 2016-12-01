@@ -1,0 +1,54 @@
+﻿@using BtsPortal.Web.Extensions
+@model BtsPortal.Entities.Bts.SsoApplicationDataVm
+
+<br />
+<br />
+<div class="container">
+    @if (@ViewBag.error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.error
+        </div>
+    }
+    @if (Model.IsBtdf)
+    {
+        <div class="alert alert-warning" style="width: 60%">All settings will be overridden during deployment by the BTDF framework</div>
+    }
+    else
+    {
+        @*<div class="pull-left">
+            <button class="btn btn-sm btn-primary" onclick="createSsoProperty()">
+                <i class="fa fa-plus-circle" aria-hidden="true"></i> New
+            </button>
+        </div>
+        <br />
+        <br/>*@
+    }
+    <table class="table table-font12 table-striped table-hover table-responsive table-condensed">
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+            <th></th>
+        </tr>
+        @foreach (var data in Model.ApplicationDatas.OrderBy(m => m.Key))
+        {
+            <tr>
+                <td>
+                    @data.Key
+                </td>
+                <td>
+                    <input type="text" class="form-control input-sm" id="@data.Key.RemoveNonAlphaNumeric()" value="@data.Value" data-orgValue="@data.Value"/>
+                </td>
+                <td>
+                    <button class="btn btn-xs btn-primary" onclick="updateSsoSetting('@Model.ApplicationName', '@Model.IsBtdf.ToString()', '@data.Key', '@data.Key.RemoveNonAlphaNumeric()')">
+                        <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                    </button>
+                    <span id="@string.Concat("status", data.Key.RemoveNonAlphaNumeric())" style="color: green"></span>
+                </td>
+
+            </tr>
+        }
+    </table>
+</div>
+
+<input type="hidden" id="ssoOpUrl" value="@Url.Action("SaveSsoSetting", "BtsOps")" />

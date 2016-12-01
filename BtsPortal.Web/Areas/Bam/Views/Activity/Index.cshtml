@@ -1,0 +1,76 @@
+﻿@{
+    ViewBag.Title = "BAM Activity";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (ViewBag.BamNotInstalled != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.BamNotInstalled
+    </div>
+}
+else
+{
+    <br />
+    <div class="container container-fluid">
+        <div class="row">
+            <table class="table">
+                <tr>
+                    <td><b>Activity: </b></td>
+                    <td>@Html.DropDownList("activity", (List<SelectListItem>)ViewBag.activities, new { @id = "activity", @class = "form-control input-sm", @onchange = "loadActivityView('')", data_url = @Url.Action("GetActivityView", "Activity") })</td>
+                    <td><b>Activity View: </b></td>
+                    <td>
+                        @if (ViewBag.views != null)
+                        {
+                        @Html.DropDownList("view", (List<SelectListItem>)ViewBag.views, new { @id = "view", @class = "form-control input-sm", @onchange = "loadViewData('1','true')" })
+                        }
+                        else
+                        {
+                        <select id="view" class="form-control" onchange="loadViewData('1','true')" data-url="@Url.Action("LoadActivity", "Activity")"></select>
+                        }
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="row">
+            <div id="notif"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="vwPort">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+<input type="hidden" id="pageRootUrl" value="@Url.Action("Index","Activity")" />
+<div class="modal" id="bamModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+
+</div>
+
+<div id="confirmActionModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                <span>Please confirm you selection.</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-primary" id="btnProceed">Proceed</button>
+                <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts{
+   <script src="~/Scripts/site-bam-activity.js"></script>
+}

@@ -1,0 +1,40 @@
+﻿@using BtsPortal.Web.Infrastructure.Settings
+@{
+    ViewBag.Title = "BTS Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<br />
+
+<div class="container container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="list-group">
+                <a class="list-group-item" href="#" onclick="loadSummary()" id="summary"  data-url="@Url.Action("Summary","Dashboard")"><i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; Summary</a>
+                <a class="list-group-item" href="#" onclick="loadApplications()" id="application" data-url="@Url.Action("Applications","Dashboard")"><i class="fa fa-pencil fa-fw" aria-hidden="true"></i>&nbsp; Applications</a>
+                <a class="list-group-item" href="#" onclick="loadHosts()" id="hosts" data-url="@Url.Action("Hosts","Dashboard")"><i class="fa fa-book fa-fw" aria-hidden="true"></i>&nbsp; Hosts</a>
+                <a class="list-group-item" href="#" onclick="loadSso('none')" id="sso" data-url="@Url.Action("Sso", "Dashboard")"><i class="fa fa-cog fa-fw" aria-hidden="true"></i>&nbsp; SSO</a>
+                @if (AppSettings.EnableEdi)
+                {
+                    <a class="list-group-item" href="#" onclick="loadEdiParties()" id="edi" data-url="@Url.Action("Edi","Dashboard")"><i class="fa fa-globe fa-fw" aria-hidden="true"></i>&nbsp; Parties</a>
+                }
+            </div>
+
+        </div>
+        <div class="col-md-10">
+            <div class="alert" id="divStatus"></div>
+            <div id="btsVwPort"></div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+
+</div>
+
+@section Scripts{
+    <script src="~/Scripts/site-bts-dashboard.js"></script>
+    @*<script type="text/javascript">
+        var BASE_SITE_URL = '@Url.c("~/")';
+    </script>*@
+}

@@ -1,0 +1,149 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+    font-size: 12px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.navbar-brand {
+    padding: 0px; /* firefox bug fix */
+}
+
+    .navbar-brand > img {
+        height: 100%;
+        padding: 15px; /* firefox bug fix */
+        width: auto;
+    }
+
+.table-font11 {
+    font-size: 11px;
+}
+
+.table-font12 {
+    font-size: 12px;
+}
+
+.span-width-50 {
+    display: block;
+    width: 50px;
+    word-wrap: break-word;
+}
+
+.span-width-100 {
+    display: block;
+    width: 100px;
+    word-wrap: break-word;
+}
+
+.span-width-150 {
+    display: block;
+    width: 150px;
+    word-wrap: break-word;
+}
+
+.span-width-200 {
+    display: block;
+    width: 200px;
+    word-wrap: break-word;
+}
+
+.span-width-250 {
+    display: block;
+    width: 200px;
+    word-wrap: break-word;
+}
+
+.faded {
+    opacity: 0.5;
+}
+
+.alphabetCircle {
+    border-radius: 50%;
+    behavior: url(PIE.htc); /* remove if you don't care about IE8 */
+    width: 25px;
+    height: 25px;
+    padding: 1px;
+    /*background: rosybrown;*/
+    border: 2px solid #666;
+    color: black;
+    text-align: center;
+    /*font: 32px Arial, sans-serif;*/
+}
+
+.btsError {
+    background: magenta;
+}
+
+.btsWarning {
+    background: yellow;
+}
+
+.btsSuccess {
+    background: lightgreen;
+}
+
+.btsAllGood {
+    background: white;
+}
+
+.list-group-sm {
+    padding-left: 0;
+    margin-bottom: 210px;
+}
+
+.list-group-item-sm {
+    position: relative;
+    display: block;
+    padding: 5px 10px;
+    font-size: 11px;
+    margin-bottom: -1px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+
+    .list-group-item-sm:first-child {
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+    }
+
+    .list-group-item-sm:last-child {
+        margin-bottom: 0;
+        border-bottom-right-radius: 4px;
+        border-bottom-left-radius: 4px;
+    }
+
+a.list-group-item-sm {
+    color: #555;
+}
+
+    a.list-group-item-sm .list-group-item-heading-sm {
+        color: #333;
+    }
+
+  
+.list-group-item-sm.active {
+    z-index: 2;
+    color: #fff;
+    background-color: #428bca;
+    border-color: #428bca;
+}
+

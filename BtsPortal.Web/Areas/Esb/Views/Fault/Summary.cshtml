@@ -1,0 +1,181 @@
+﻿@using BtsPortal.Entities.Esb
+@model BtsPortal.Entities.Esb.FaultSummaryVm
+
+@{
+    ViewBag.Title = "Fault Summary";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>
+    Esb Fault Summary
+</h2>
+
+@using (Html.BeginForm("Summary", "Fault", FormMethod.Get, new { @class = "formShowLoadOnSubmit" }))
+{
+    <div class="container">
+        <table class="table-condensed table">
+            <tr>
+                <td>From</td>
+                <td>
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(m => m.StartDate, "{0:MM/dd/yyyy HH:mm}", new { @class = "form-control input-sm datepicker", @id = "StartDate" })
+                    </div>
+                </td>
+                <td>To</td>
+                <td>
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(m => m.EndDate, "{0:MM/dd/yyyy HH:mm}", new { @class = "form-control input-sm datepicker", @id = "EndDate" })
+                    </div>
+                </td>
+                <td><button type="submit" class="btn btn-sm btn-primary">Submit</button></td>
+            </tr>
+        </table>
+    </div>
+
+
+}
+
+@if (Model.FaultSummariesByApplication.Count > 0)
+{
+    <div class="panel panel-primary">
+        <div class="panel-heading">Faults By Application</div>
+        <div class="panel-body">
+            <table class="table table-striped table-hover">
+                <tr>
+                    <th>
+                        Application
+                    </th>
+                    <th>
+                        UnResolved
+                    </th>
+                    <th>
+                        Resolved
+                    </th>
+                    @*<th>
+                            Resubmitted
+                        </th>*@
+                    <th>
+                        Flagged
+                    </th>
+                    <th>
+                        Last Fault Occurred
+                    </th>
+
+                </tr>
+
+                @foreach (var item in Model.FaultSummariesByApplication)
+                {
+                    <tr>
+                        <td>
+                            <b>
+                                @Html.DisplayFor(modelItem => item.Application)
+                            </b>
+                        </td>
+                        <td>
+                            @if (item.UnResolved == 0)
+                            {
+                                <span class="glyphicon glyphicon-info-sign faded" aria-hidden="true" style="color: red"></span>
+                                @Html.DisplayFor(modelItem => item.UnResolved)
+                            }
+                            else
+                            {
+                                <span class="glyphicon glyphicon-info-sign" aria-hidden="true" style="color: red"></span>
+                                @Html.ActionLink(item.UnResolved.ToString(), "Index", new
+                           {
+                               Init = true,
+                               Application = item.Application,
+                               Status = FaultStatusType.UnResolved,
+                               FromDateTime = Model.StartDate,
+                               ToDateTime = Model.EndDate
+                           }, null)
+                            }
+                        </td>
+                        <td>
+                            @if (item.Resolved == 0)
+                            {
+                                <span class="glyphicon glyphicon-info-sign faded" aria-hidden="true" style="color: green"></span>
+                                @Html.DisplayFor(modelItem => item.Resolved)
+                            }
+                            else
+                            {
+                                <span class="glyphicon glyphicon-info-sign" aria-hidden="true" style="color: green"></span>
+                                @Html.ActionLink(item.Resolved.ToString(), "Index", new
+                           {
+                               Init = true,
+                               Application = item.Application,
+                               Status = FaultStatusType.Resolved,
+                               FromDateTime = Model.StartDate,
+                               ToDateTime = Model.EndDate
+                           }, null)
+                            }
+                        </td>
+                        @*<td>
+                                @if (item.Resubmitted == 0)
+                                {
+                                    <span class="glyphicon glyphicon-ok-sign faded" aria-hidden="true" style="color: blue"></span>
+                                    @Html.DisplayFor(modelItem => item.Resubmitted)
+                                }
+                                else
+                                {
+                                    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true" style="color: blue"></span>
+                                    @Html.ActionLink(item.Resubmitted.ToString(), "Index", new
+                               {
+                                   Init = true,
+                                   Application = item.Application,
+                                   Status = FaultStatusType.Resubmitted,
+                                   FromDateTime = Model.StartDate,
+                                   ToDateTime = Model.EndDate
+                               }, null)
+                                }
+                            </td>*@
+                        <td>
+                            @if (item.Flagged == 0)
+                            {
+                                <span class="glyphicon glyphicon-question-sign faded" aria-hidden="true" style="color: magenta"></span>
+                                @Html.DisplayFor(modelItem => item.Flagged)
+                            }
+                            else
+                            {
+                                <span class="glyphicon glyphicon-question-sign" aria-hidden="true" style="color: magenta"></span>
+                                @Html.ActionLink(item.Flagged.ToString(), "Index", new
+                           {
+                               Init = true,
+                               Application = item.Application,
+                               Status = FaultStatusType.Flagged,
+                               FromDateTime = Model.StartDate,
+                               ToDateTime = Model.EndDate
+                           }, null)
+                            }
+                        </td>
+                        <td>
+                            @item.LastFaultOccurredDateLocal.GetValueOrDefault().ToString("yyyy-MM-dd HH:mm")
+
+                        </td>
+
+                    </tr>
+                }
+
+            </table>
+
+        </div>
+    </div>
+
+}
+
+
+@section Scripts{
+    <script type="text/javascript">
+        $(function () {
+            $('#StartDate').datetimepicker({
+            });
+            $('#EndDate').datetimepicker({
+                useCurrent: false //Important! See issue #1075
+            });
+            $("#StartDate").on("dp.change", function (e) {
+                $('#EndDate').data("DateTimePicker").minDate(e.date);
+            });
+            $("#EndDate").on("dp.change", function (e) {
+                $('#StartDate').data("DateTimePicker").maxDate(e.date);
+            });
+        });
+    </script>
+}

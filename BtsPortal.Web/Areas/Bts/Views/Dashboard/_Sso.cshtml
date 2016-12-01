@@ -1,0 +1,86 @@
+﻿@model List<BtsPortal.Entities.Bts.BtsApplication>
+<h3>
+    SSO
+    &nbsp;&nbsp;
+    <a class="btn btn-sm btn-primary" href="#" onclick="loadSsoData()"><i class="fa fa-refresh fa-fw" aria-hidden="true"></i>&nbsp; Refresh</a>
+</h3>
+
+<div class="container pull-left" style="width:90%">
+
+    @if (@ViewBag.error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.error
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-10">
+            @Html.DropDownList("apps", (List<SelectListItem>)ViewBag.apps, new { @class = "form-control input-sm", @onchange = "loadSsoData()", id = "ssoAppList", data_url = @Url.Action("SsoData", "Dashboard") })
+        </div>
+        @*<div class="col-md-2">
+                <a class="btn btn-sm btn-success" href="#" onclick="createNewSsoApp()"><i class="fa fa-plus-circle fa-fw" aria-hidden="true"></i>&nbsp; New MS SSO App</a>
+            </div>*@
+
+    </div>
+    <div class="row">
+        <div class="col-md-12" id="appData">
+
+        </div>
+
+    </div>
+</div>
+
+<div id="newAppModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">New App</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="appName">Application:</label>
+                    <input type="text" class="form-control" id="newAppName">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-primary" id="btnCreateNewApp">Create</button>
+                <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="newDataModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">New Property</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="appName">Application:</label>
+                    <input type="text" class="form-control" id="appName" readonly="readonly">
+                </div>
+                <div class="form-group">
+                    <label for="key1">Key:</label>
+                    <input type="text" class="form-control" id="key1">
+                </div>
+                <div class="form-group">
+                    <label for="value1">Value:</label>
+                    <input type="text" class="form-control" id="value1">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-primary" id="btnCreate">Create</button>
+                <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+</div>

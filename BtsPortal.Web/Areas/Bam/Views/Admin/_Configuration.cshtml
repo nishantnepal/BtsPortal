@@ -1,0 +1,181 @@
+﻿@using BtsPortal.Web.Infrastructure.Settings
+@model BtsPortal.Entities.Bam.ActivityView
+
+<style type="text/css">
+    #sql {
+        max-width: 500px;
+    }
+
+    #sqlNoOfRows {
+        max-width: 500px;
+    }
+
+    .tooltip-inner {
+        max-width: 350px;
+        /* If max-width does not work, try using width instead */
+        width: 350px;
+    }
+
+    .modal .modal-body {
+        max-height: 500px;
+        overflow-y: auto;
+        font-size: 11px;
+    }
+</style>
+@{
+    var btnName = Model.Id.GetValueOrDefault(0) > 0 ? "Update" : "Create";
+    List<string> currentFilters = new List<string>();
+}
+@if (@ViewBag.error != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.error
+    </div>
+}
+
+<div class="modal-dialog modal-lg" style="width: 80%" data-backdrop="static">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">
+                @ViewBag.Title
+            </h4>
+        </div>
+        <div class="modal-body table-font11">
+            <div id="alert" class="row"></div>
+            <form class="form-horizontal input-group-sm">
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="name">Id:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="vId" placeholder="Activity" value="@Model.Id" readonly="readonly">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="activity">Activity:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="activity" placeholder="Activity" value="@Model.ActivityName" readonly="readonly">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="name">Name:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="name" placeholder="View Name" value="@Model.ViewName">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="sql">SQL:</label>
+                    <div class="col-sm-10">
+                        <textarea rows="5" cols="75" id="sql" placeholder="The raw sql to execute.">@Model.SqlToExecute</textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="noOfRowsPerPage">Page Size:</label>
+                    <div class="col-sm-10">
+                        @Html.DropDownList("noOfRowsPerPage", (List<SelectListItem>)@ViewBag.pageSizes, new { @class = "form-control input-xs", @id = "noOfRowsPerPage" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="sqlOrderBy">Order By:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="sqlOrderBy" placeholder="[optional]orderid desc, customerId" value="@Model.SqlOrderBy">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="sqlNoOfRows">
+                        Filters:
+                        <button class='btn btn-danger btn-xs' onclick='removeAllParameters(event)'>
+                            Clear All
+                        </button>
+                    </label>
+                    <div class="col-sm-10 col-sm-offset-2">
+
+                        <table class="table" style="width: 70%" id="tblSelectedConditions">
+                            <tr>
+                                <th>
+                                    ParameterName
+                                </th>
+                                <th>
+                                    Type
+                                </th>
+                                <th>
+                                    Display Name
+                                </th>
+                                <th></th>
+                            </tr>
+                            <tr id="filterRow">
+                                <td>
+                                    <input type="text" class="form-control input-xs" id="parameter" placeholder="parameter name eg customerid" />
+                                </td>
+                                <td>
+                                    @Html.DropDownList("type", (List<SelectListItem>)ViewBag.typeList, new { @id = "type", @class = "form-control input-xs" })
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control input-xs" id="displayName" placeholder="display name eg Customer Id" />
+                                </td>
+                                <td>
+                                    <button class="btn btn-xs" onclick="addCondition(event)">
+                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            @foreach (var item in Model.ViewFilterParameters)
+                            {
+                                <tr id="@string.Concat("dat_", 1)">
+                                    <td>@item.Name</td>
+                                    <td>@item.ParameterType</td>
+                                    <td>@item.DisplayName</td>
+                                    <td></td>
+                                </tr>
+                            }
+
+                        </table>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="sqlNoOfRows">
+                        Paging SQL:
+                    </label>
+                    <div class="col-sm-10">
+                        <textarea rows="5" cols="75" id="sqlNoOfRows" placeholder="[Optional]Total no of rows for the sql query. eg. if the source query is  select CustomerId, OrderId from orders where createddate > ''2000-01-01'' and customerid = 1 then the paging query will be select count(OrderId or *) from orders where createddate > ''2000-01-01'' and customerid = 1.Exception thrown if the first cell from the dataset is not numeric">@Model.SqlNoOfRows</textarea>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <i>@($"Created by '{Model.InsertedBy}' on '{Model.InsertedDate?.ToString(AppSettings.DateTimeDisplay) ?? ""}'")</i>
+                </div>
+                <div class="row">
+                    <i>@($"Updated by '{Model.LastUpdatedBy}' on '{Model.LastUpdatedDate?.ToString(AppSettings.DateTimeDisplay) ?? ""}'")</i>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-9 col-sm-3">
+                        <button type="submit" class="btn btn-primary" onclick="updateConfig(event)" id="btnUpdateConfig" data-url="@Url.Action("UpdateConfiguration", "Admin")">
+                            @btnName
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>
+
+<input type="hidden" id="hasFilters" value="@Model.ViewFilterParameters.Count" />
+<input type="hidden" id="currentFiltersCleared" value="false" />
+
+<script type="text/javascript">
+    var selectedConditions = [];
+    $(document)
+        .ready(function() {
+            $('[data-toggle="tooltip"]').tooltip();
+            if ($("#hasFilters").val() > 0) {
+                $("#filterRow").hide();
+            }
+        });
+
+
+</script>
+
+<script src="~/Scripts/site-bam-admin-configuration.js"></script>

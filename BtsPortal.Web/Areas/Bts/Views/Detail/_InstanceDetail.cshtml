@@ -1,0 +1,155 @@
+﻿@using BtsPortal.Web.Infrastructure.Settings
+@model BtsPortal.Entities.Bts.BtsInstanceDetail
+
+<div class="modal-dialog modal-lg" style="width: 80%" data-backdrop="static">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">
+                Service Details for Instance @Model.InstanceId.ToString()
+            </h4>
+        </div>
+        <div class="modal-body">
+            <div class="container">
+                @if (@ViewBag.error != null)
+                {
+                    <div class="alert alert-danger">
+                        @ViewBag.error
+                    </div>
+                }
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a data-toggle="tab" href="#general">General</a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#error">Error Info</a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#messages">Messages</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="container tab-pane fade in active" id="general">
+                        <br/>
+                        <table class="table table-hover table-responsive table-striped table-font12">
+                            @*<tr>
+                                <td><b></b></td>
+                                <td></td>
+                            </tr>*@
+                            <tr>
+                                <td><b>Status</b></td>
+                                <td>@Model.Status</td>
+                            </tr>
+                            <tr>
+                                <td><b>Start Time</b></td>
+                                <td>@Model.CreateDateTime.GetValueOrDefault().ToString(AppSettings.DateTimeDisplay)</td>
+                            </tr>
+                            <tr>
+                                <td><b>Service Class</b></td>
+                                <td>@Model.ServiceClass</td>
+                            </tr>
+                            <tr>
+                                <td><b>Instance Id</b></td>
+                                <td>@Model.InstanceId</td>
+                            </tr>
+                            <tr>
+                                <td><b>Pending Operation</b></td>
+                                <td>@Model.PendingOperation</td>
+                            </tr>
+                            <tr>
+                                <td><b>Processing Server</b></td>
+                                <td>@Model.Server</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="container tab-pane fade" id="error">
+                        <br/>
+                        <table class="table table-hover table-responsive table-striped table-font12">
+                            <tr>
+                                <td><b>Error Code</b></td>
+                                <td>@Model.ErrorCode</td>
+                            </tr>
+                            <tr>
+                                <td><b>Suspend DateTime</b></td>
+                                <td>@Model.SuspendDateTime?.ToString(AppSettings.DateTimeDisplay)</td>
+                            </tr>
+                            <tr>
+                                <td><b>Error Description</b></td>
+                                <td>
+                                    <span class="span-width-200">
+                                        @Model.ErrorDescription
+                                </span>
+
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="container tab-pane fade" id="messages">
+                        <br/>
+                        <div id="msgDtlTable" style="overflow-y: scroll; height:250px">
+                            @if (Model.TotalMessagesCount > AppSettings.MaxBtsMessagesToShow)
+                            {
+                                <div class="alert alert-warning" role="alert" style="width: 90%;">
+                                    Only @AppSettings.MaxBtsMessagesToShow out of @Model.TotalMessagesCount shown.
+                                </div>
+                            }
+                            <table class="table table-striped table-hover" style="width: 100%">
+                                <tr>
+                                    <th>
+                                        Message Id
+                                    </th>
+                                    <th>
+                                        Message Type
+                                    </th>
+                                    <th>
+                                        Message Status
+                                    </th>
+                                    <th>
+                                        Created Time
+                                    </th>
+                                    <th></th>
+                                </tr>
+                                @foreach (var msg in Model.Messages)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a href="#msgDetail" onclick="displayMsgDetail('@Model.InstanceId', '@msg.MessageId')">@msg.MessageId</a>
+                                        </td>
+                                        <td>
+                                            @msg.MessageType
+                                        </td>
+                                        <td>
+                                            @msg.MessageStatus
+                                        </td>
+                                        <td>
+                                            @msg.DateCreated.ToString(AppSettings.DateTimeDisplay)
+                                        </td>
+                                        <td>
+                                            <a href="~/detail/DownloadMessage?messageId=@msg.MessageId&instanceId=@Model.InstanceId">
+                                                <span class="glyphicon glyphicon-download-alt" title="Download Message"></span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+
+                            </table>
+                        </div>
+                        <div id="msgDtls">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+</div>
+<!-- /.modal-content -->
+</div>
+

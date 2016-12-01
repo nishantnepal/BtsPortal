@@ -1,0 +1,272 @@
+﻿@using BtsPortal.Entities.Esb
+@using BtsPortal.Web.Extensions
+@using BtsPortal.Web.Infrastructure.Settings
+@using PagedList.Mvc
+@model BtsPortal.Web.ViewModels.Esb.FaultSearchRequestResponse
+
+@{
+    ViewBag.Title = "Fault Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2> ESB Fault Search</h2>
+@using (@Html.BeginForm("Index", "Fault", FormMethod.Get, new { @class = "formShowLoadOnSubmit" }))
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-condensed table-striped">
+                    <tr>
+                        <td><b>Application</b></td>
+                        <td>
+                            @Html.DropDownListFor(m => m.Request.Application, Model.Request.Applications, new { @class = "form-control input-sm" })
+                        </td>
+                        <td><b>Status</b></td>
+                        <td>
+                            @Html.EnumDropDownListFor(x => x.Request.Status, "Any Status", new { @class = "form-control input-sm" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>From</b></td>
+                        <td>
+                            @Html.TextBoxFor(m => m.Request.FromDateTime, "{0:MM/dd/yyyy HH:mm}", new { @class = "form-control input-sm", @id = "FromDateTime" })
+                        </td>
+                        <td><b>To</b></td>
+                        <td>
+                            @Html.TextBoxFor(m => m.Request.ToDateTime, "{0:MM/dd/yyyy HH:mm}", new { @class = "form-control input-sm", @id = "ToDateTime" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Message</b></td>
+                        <td>
+                            @Html.TextBoxFor(m => m.Request.Message, new { @class = "form-control input-sm", @placeholder = "Fault Message Contains" })
+                        </td>
+                        <td><b>Error Type</b></td>
+                        <td>
+                            @Html.TextBoxFor(m => m.Request.ErrorType, new { @class = "form-control input-sm", @placeholder = "Error Type Contains" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Fault Code</b></td>
+                        <td>
+                            @Html.TextBoxFor(m => m.Request.FaultCode, new { @class = "form-control input-sm" })
+                        </td>
+                        <td><b>Fault Id</b></td>
+                        <td>
+                            @Html.TextBoxFor(m => m.Request.FaultId, new { @class = "form-control input-sm" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><b>Category</b></td>
+                        <td>
+                            @Html.TextBoxFor(m => m.Request.FailureCategory, new { @class = "form-control input-sm" })
+                        </td>
+                        <td><b>Scope</b></td>
+                        <td>
+                            @Html.TextBoxFor(m => m.Request.FailureScope, new { @class = "form-control input-sm" })
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <input type="hidden" value="true" id="Request_Init" name="Request.Init" />
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="form-group form-group-sm">
+                    <div class="row">
+                        <input type="submit" class="btn btn-primary" value="Search" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}
+
+<div class="container">
+    @if (!string.IsNullOrWhiteSpace(Model.Error))
+    {
+        <div class="alert alert-danger">
+            <strong>Error - </strong> @Model.Error
+        </div>
+    }
+    <div id="divAlert"></div>
+
+    <div class="row">
+        <div class="col-md-9">
+            @Html.PagedListPager(Model.PagedResponses,
+                page => Url.Action("Index", new
+                {
+                    page,
+                    Model.Request.Application,
+                    Model.Request.Status,
+                    Model.Request.FromDateTime,
+                    Model.Request.ToDateTime,
+                    Model.Request.Message,
+                    Model.Request.ErrorType,
+                    Model.Request.FaultCode,
+                    Model.Request.FaultId,
+                    Model.Request.FailureCategory,
+                    Model.Request.FailureScope,
+                    Model.Request.Init
+                }))
+        </div>
+        <div class="col-md-3">
+            @if (Model.CurrentStatus == FaultStatusType.Flagged)
+            {
+                <button type="button" class="btn btn-success btn-sm" onclick="bulkResolveFault('@FaultStatusType.Resolved')">Bulk Resolve</button>
+            }
+            @if (Model.CurrentStatus == FaultStatusType.UnResolved)
+            {
+                <div class="btn-group btn-group-sm pull-right">
+                    <button type="button" class="btn btn-success" onclick="bulkResolveFault('@FaultStatusType.Resolved')">Bulk Resolve</button>
+                    <button type="button" class="btn btn-warning" onclick="bulkResolveFault('@FaultStatusType.Flagged')">Bulk Flag</button>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <table class="table table-condensed table-striped table-font12">
+                <tr>
+                    <th>
+                        @Html.CheckBox("chkHeader", new { @id = "chkHeader" })
+                    </th>
+                    <th>Status</th>
+                    <th>Id</th>
+                    <th>Application</th>
+                    <th>Date</th>
+                    <th>Generator</th>
+                    <th>Service Name</th>
+                    <th>Error Type</th>
+                    <th>Failure Category</th>
+                    <th>Fault Code</th>
+                    <th>Scope</th>
+                    <th>Machine</th>
+                    <th></th>
+                </tr>
+                @foreach (var response in Model.Responses)
+                {
+                    <tr>
+                        <td>
+                            @Html.CheckBox("chk" + response.FaultId.ToString().RemoveNonAlphaNumeric(), new { @id = "chk" + response.ToString().RemoveNonAlphaNumeric(), @class = "chkRow", title = "Only applicable for unresolved and flagged status.", data_value = @response.FaultId })
+                        </td>
+                        <td data-toggle="tooltip" title="@response.Status.ToString()" data-placement="top">
+                            @switch (response.Status)
+                            {
+                                case FaultStatusType.UnResolved:
+                                    <span class="glyphicon glyphicon-info-sign" aria-hidden="true" style="color: red"></span>
+                                    break;
+                                    @*case FaultStatusType.Resubmitted:
+                                        <span class="glyphicon glyphicon-ok-sign" aria-hidden="true" style="color: blue"></span>
+                                        break;*@
+                            case FaultStatusType.Resolved:
+                                <span class="glyphicon glyphicon-info-sign" aria-hidden="true" style="color: green"></span>
+                                break;
+                            case FaultStatusType.Flagged:
+                                <span class="glyphicon glyphicon-question-sign" aria-hidden="true" style="color: magenta"></span>
+                                    break;
+
+                            }
+
+                        </td>
+                        <td>
+                            <span class="span-width-100">
+                                <a href="#faultDetail" onclick="displayfaultDetail('@response.FaultId')">@response.FaultId</a>
+
+                            </span>
+                        </td>
+                        <td>
+                            <span class="span-width-150">
+                                @response.Application
+                            </span>
+                        </td>
+                        <td>
+                            <span>
+                                @response.TransactionDateTimeLocal.GetValueOrDefault().ToString(AppSettings.DateTimeDisplay)
+                            </span>
+                        </td>
+                        <td>
+                            <span>
+                                @response.FaultGenerator
+                            </span>
+                        </td>
+                        <td>
+                            <span class="span-width-150">
+                                @response.ServiceName
+                            </span>
+                        </td>
+                        <td>
+                            <span class="span-width-100">
+                                @response.ErrorType
+                            </span>
+                        </td>
+                        <td><span class="span-width-100">@response.FailureCategory</span></td>
+                        <td><span class="span-width-100">@response.FaultCode</span></td>
+                        <td><span class="span-width-100">@response.Scope</span></td>
+                        <td><span>@response.MachineName</span></td>
+                        <td>
+                            <div class="btn-group btn-group-sm span-width-150">
+                                @if (response.Status != FaultStatusType.Flagged)
+                                {
+                                    <button type="button" class="btn btn-success btn-@response.Status.ToString()" id="btn-resolved-@response.FaultId.ToString().RemoveNonAlphaNumeric()" onclick="resolveFault('@response.FaultId',    '@FaultStatusType.Resolved',
+    'btn-resolved-@response.FaultId.ToString().RemoveNonAlphaNumeric()')">
+                                        Resolve
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn btn-success btn-@FaultStatusType.UnResolved.ToString()" id="btn-resolved-@response.FaultId.ToString().RemoveNonAlphaNumeric()" onclick="resolveFault('@response.FaultId',    '@FaultStatusType.Resolved',
+    'btn-resolved-@response.FaultId.ToString().RemoveNonAlphaNumeric()')">
+                                        Resolve
+                                    </button>
+                                }
+                                <button type="button" class="btn btn-warning btn-@response.Status.ToString()" id="btn-flagged-@response.FaultId.ToString().RemoveNonAlphaNumeric()" onclick="resolveFault('@response.FaultId', '@FaultStatusType.Flagged', 'btn-flagged-@response.FaultId.ToString().RemoveNonAlphaNumeric()')">Flag</button>
+                            </div>
+                        </td>
+
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="faultDetailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+
+</div>
+
+<div>
+    <input type="hidden" id="hCurrentStatus" value="@Model.CurrentStatus" />
+</div>
+
+<div id="confirmActionModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="usr">Comment:</label>
+                    <input type="text" class="form-control" id="comment">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-primary" id="btnProceed">Proceed</button>
+                <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<input type="hidden" id="fltDtlUrl" value="@Url.Action("Detail","Fault")" />
+<input type="hidden" id="msgDtlUrl" value="@Url.Action("MessageDetail","Fault")" />
+<input type="hidden" id="fltUpdStatusUrl" value="@Url.Action("UpdateFaultStatus","Fault")"/>
+
+@section Scripts{
+<script src="~/Scripts/site-esb.js"></script>
+}
