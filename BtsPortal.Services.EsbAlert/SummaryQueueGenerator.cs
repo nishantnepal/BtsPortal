@@ -54,6 +54,10 @@ namespace BtsPortal.Services.EsbAlert
                             Process.HandleException(exception);
                         }
                     }
+                    else
+                    {
+                        EventLog.WriteEntry(AppSettings.SERVICE_NAME, $"Summary queue has not been enabled. Please enable for generating summary alerts. Key name : ISSUMMARYQUEUEENABLED ", EventLogEntryType.Warning);
+                    }
                 }
                 finally
                 {

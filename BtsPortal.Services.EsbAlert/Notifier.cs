@@ -32,6 +32,15 @@ namespace BtsPortal.Services.EsbAlert
                 var esbConfiguration = _esbExceptionDbRepo.GetEsbConfiguration();
                 int qInterval = AppSettings.DEFAULT_INTERVAL;
                 int qBatchSize = AppSettings.DEFAULT_BATCH_SIZE;
+                bool qEnabled = false;
+                string smtpServer = esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "EMAILSERVER")?.Value;
+                int? smtpPort = null;
+                string smtpUserName = esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "SMTPCREDENTIALSUSERNAME")?.Value;
+                string smtpPassword = esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "SMTPCREDENTIALSPASSWORD")?.Value;
+                bool smtpUseSsl = Convert.ToBoolean(esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "SMTPENABLESSL")?.Value);
+                string emailSender = esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "SENDER")?.Value;
+                string xsltPath = esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "XSLTPATH")?.Value;
+                string summaryXsltPath = esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "XSLTSUMMARYPATH")?.Value;
                 try
                 {
                     qInterval = Convert.ToInt32(esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "EMAILINTERVAL")?.Value);
@@ -48,16 +57,22 @@ namespace BtsPortal.Services.EsbAlert
                 {
                     Process.HandleException("Invalid value of 'EMAILBATCHSIZE' in configuration settings. Using default of " + AppSettings.DEFAULT_BATCH_SIZE, EventLogEntryType.Warning);
                 }
-
-                bool qEnabled = Convert.ToBoolean(esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "ISEMAILENABLED")?.Value);
-                string smtpServer = esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "EMAILSERVER")?.Value;
-                int? smtpPort = Convert.ToInt32(esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "SMTPPORT")?.Value);
-                string smtpUserName = esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "SMTPCREDENTIALSUSERNAME")?.Value;
-                string smtpPassword = esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "SMTPCREDENTIALSPASSWORD")?.Value;
-                bool smtpUseSsl = Convert.ToBoolean(esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "SMTPENABLESSL")?.Value);
-                string emailSender = esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "SENDER")?.Value;
-                string xsltPath = esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "XSLTPATH")?.Value;
-                string summaryXsltPath = esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "XSLTSUMMARYPATH")?.Value;
+                try
+                {
+                    qEnabled = Convert.ToBoolean(esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "ISEMAILENABLED")?.Value);
+                }
+                catch 
+                {
+                    Process.HandleException("Invalid value of 'ISEMAILENABLED' in configuration settings. Using default of false", EventLogEntryType.Warning);
+                }
+                try
+                {
+                    smtpPort = Convert.ToInt32(esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "SMTPPORT")?.Value);
+                }
+                catch
+                {
+                    
+                }
 
                 try
                 {
@@ -83,6 +98,10 @@ namespace BtsPortal.Services.EsbAlert
                             _esbExceptionDbRepo.UpdateAlertEmails(data);
                         }
 
+                    }
+                    else
+                    {
+                        EventLog.WriteEntry(AppSettings.SERVICE_NAME, $"Notifier queue has not been enabled. Please enable for sending notifications(email). Key name : ISEMAILENABLED ", EventLogEntryType.Warning);
                     }
                 }
                 catch (Exception exception)

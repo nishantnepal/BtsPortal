@@ -68,6 +68,10 @@ namespace BtsPortal.Services.EsbAlert
                             _esbExceptionDbRepo.UpdateAlertBatchComplete(data.BatchId, exception.Message);
                         }
                     }
+                    else
+                    {
+                        EventLog.WriteEntry(AppSettings.SERVICE_NAME, $"Queue has not been enabled. Please enable for generating summary alerts. Key name : ISQUEUEENABLED ", EventLogEntryType.Warning);
+                    }
                 }
                 finally
                 {

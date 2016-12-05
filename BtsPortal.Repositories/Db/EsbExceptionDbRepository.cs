@@ -597,7 +597,7 @@ update Configuration
             int result = _dbConnection.Execute(query, new
             {
                 configurationId = configurationId,
-                value = value.ToDbStringAnsi(),
+                value = value.ToDbStringAnsi(length: 256),
                 user = user.ToDbStringAnsi()
 
 
@@ -1078,7 +1078,7 @@ values
 )
 ";
 
-              _dbConnection.Execute(query, message, null, _commandTimeoutSeconds);
+                _dbConnection.Execute(query, message, null, _commandTimeoutSeconds);
             }
 
             foreach (var message in faultMessageDatas)
