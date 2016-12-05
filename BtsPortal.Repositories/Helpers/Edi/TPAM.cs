@@ -11,7 +11,7 @@ namespace BtsPortal.Repositories.Helpers.Edi
 http://social.technet.microsoft.com/wiki/contents/articles/33699.create-trading-partner-agreements-in-biztalk-server-2013-r2-using-code.aspx
          */
 
-    public class TPAM
+    class TPAM
     {
         SqlConnectionStringBuilder _builder;
         public TPAM(SqlConnectionStringBuilder sqlBuilder)

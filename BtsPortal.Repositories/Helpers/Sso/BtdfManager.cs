@@ -7,7 +7,7 @@ using SSOSettingsFileManager;
 
 namespace BtsPortal.Repositories.Helpers.Sso
 {
-    public class BtdfManager
+    class BtdfManager
     {
         internal static List<SsoApplicationData> LoadBtdfSettingsFromSso(string appName)
         {

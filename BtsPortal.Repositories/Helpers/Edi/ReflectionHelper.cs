@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace BtsPortal.Repositories.Helpers.Edi
 {
-    public static class ReflectionHelper
+    static class ReflectionHelper
     {
         private static FieldInfo GetFieldInfo(Type type, string fieldName)
         {

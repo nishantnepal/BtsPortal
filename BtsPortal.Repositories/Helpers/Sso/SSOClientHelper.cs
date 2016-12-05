@@ -4,7 +4,7 @@ using Microsoft.EnterpriseSingleSignOn.Interop;
 
 namespace BtsPortal.Repositories.Helpers.Sso
 {
-    public class ConfigurationPropertyBag : IPropertyBag
+    class ConfigurationPropertyBag : IPropertyBag
     {
         private HybridDictionary properties;
         internal ConfigurationPropertyBag()

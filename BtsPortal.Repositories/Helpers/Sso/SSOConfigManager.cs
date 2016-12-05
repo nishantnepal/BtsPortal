@@ -5,7 +5,7 @@ using Microsoft.EnterpriseSingleSignOn.Interop;
 
 namespace BtsPortal.Repositories.Helpers.Sso
 {
-    public static class SSOConfigManager
+    static class SSOConfigManager
     {
         //don't actually need a GUID value
         private static string idenifierGUID = "ConfigProperties";
