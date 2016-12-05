@@ -75,15 +75,16 @@ namespace BtsPortal.Services.EsbAlert
 
         private void TestLdapConnection()
         {
+            string ldapRoot= string.Empty;
             try
             {
-                string ldapRoot = _esbConfigurations.FirstOrDefault(m => m.Name.ToUpper() == "LDAPROOT")?.Value;
+                ldapRoot = _esbConfigurations.FirstOrDefault(m => m.Name.ToUpper() == "LDAPROOT")?.Value;
                 ActiveDirectoryHelper.TestLDAPConnectivity(ldapRoot);
             }
             catch (Exception)
             {
                 throw new Exception(
-                    $"Unable to connection to esb exception database '{AppSettings.EsbExceptionDbConnectionString}'.");
+                    $"Unable to confirm ldap settings '{ldapRoot}'.");
             }
         }
 
@@ -100,7 +101,7 @@ namespace BtsPortal.Services.EsbAlert
             catch (Exception)
             {
                 throw new Exception(
-                    $"Unable to connection to esb exception database '{AppSettings.EsbExceptionDbConnectionString}'.");
+                    $"Unable to connect to esb exception database '{AppSettings.EsbExceptionDbConnectionString}'.");
             }
 
 
