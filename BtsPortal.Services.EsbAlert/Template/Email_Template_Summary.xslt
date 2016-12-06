@@ -31,6 +31,7 @@
                 <th style="border: 1px solid #dddddd;text-align: left;padding: 8px;font-size: 12px;">Count</th>
                 <th style="border: 1px solid #dddddd;text-align: left;padding: 8px;font-size: 12px;">Earliest</th>
                 <th style="border: 1px solid #dddddd;text-align: left;padding: 8px;font-size: 12px;">Latest</th>
+                <th style="border: 1px solid #dddddd;text-align: left;padding: 8px;font-size: 12px;"></th>
               </tr>
               <xsl:for-each select="ArrayOfAlertFaultSummary/AlertFaultSummary">
                 <tr>
@@ -50,6 +51,14 @@
                   </td>
                   <td style="border: 1px solid #dddddd;text-align: left;padding: 8px;font-size: 12px;">
                       <xsl:value-of select="MaxTime"/>
+                  </td>
+                  <td style="border: 1px solid #dddddd;text-align: left;padding: 8px;font-size: 12px;">
+                    <a target="_blank" >
+                      <xsl:attribute name="href">
+                        http://localhost/portal/Esb/Fault?Init=True&amp;Status=UnResolved&amp;Application=<xsl:value-of select="Application"/>&amp;FromDateTime=<xsl:value-of select="MinTime"/>&amp;ToDateTime=<xsl:value-of select="MaxTime"/>
+                        </xsl:attribute>
+                      Detail
+                    </a>
                   </td>
                 </tr>
               </xsl:for-each>
@@ -79,7 +88,7 @@
                             font-weight: normal;color: #428bca;padding: 1px 5px;font-size: 12px;line-height: 1.5;border-radius: 3px;
                             font-family:open_sansregular,Calibri,Arial,sans-serif" target="_blank" >
                       <xsl:attribute name="href">
-                        http://localhost/portal/Esb/Fault?Init=True&amp;Status=UnResolved&amp;Application=<xsl:value-of select="ArrayOfAlertFaultSummary/AlertFaultSummary[1]/Application"/>
+                        http://localhost/portal/Esb/Fault?Init=True&amp;Status=UnResolved&amp;Application=<xsl:value-of select="ArrayOfAlertFaultSummary/AlertFaultSummary[1]/Application"/>&amp;FromDateTime=<xsl:value-of select="ArrayOfAlertFaultSummary/AlertFaultSummary[1]/MinTime"/>&amp;ToDateTime=<xsl:value-of select="ArrayOfAlertFaultSummary/AlertFaultSummary[1]/MaxTime"/>
                       </xsl:attribute>
                       View Application Faults
                     </a>

@@ -61,7 +61,7 @@ namespace BtsPortal.Services.EsbAlert
                 {
                     qEnabled = Convert.ToBoolean(esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "ISEMAILENABLED")?.Value);
                 }
-                catch 
+                catch
                 {
                     Process.HandleException("Invalid value of 'ISEMAILENABLED' in configuration settings. Using default of false", EventLogEntryType.Warning);
                 }
@@ -71,7 +71,7 @@ namespace BtsPortal.Services.EsbAlert
                 }
                 catch
                 {
-                    
+                    smtpPort = AppSettings.DEFAULT_SMTP_PORT;
                 }
 
                 try
@@ -161,6 +161,8 @@ namespace BtsPortal.Services.EsbAlert
                         System.Diagnostics.Trace.WriteLine("Email successfully sent");
 
                     }
+
+                    notification.Error = string.Empty;
                 }
                 catch (Exception exception)
                 {

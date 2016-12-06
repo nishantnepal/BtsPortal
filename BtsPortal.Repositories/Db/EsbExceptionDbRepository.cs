@@ -715,6 +715,8 @@ insert into #tempAlerts
 select distinct a.AlertID,ConditionsString
 from alert a
 inner join AlertSubscription asu on a.AlertID = asu.AlertID and asu.Active = 1
+left outer join Portal_Alert pa on a.AlertID = pa.AlertID
+where ISNULL(pa.IsSummaryAlert,0) = 0
 
 -----
 Declare @alertId uniqueidentifier, @conditionsString varchar(max),@filterStatement nvarchar(4000)
@@ -976,7 +978,7 @@ INTO @alertId, @conditionsString ,@lastfired,@intervalmins
 WHILE @@FETCH_STATUS = 0  
 BEGIN  
 	declare @now datetime = getdate()
-	set @filterStatement = 'select distinct ''' + cast(@alertId as varchar(50)) + ''' ,Application,ExceptionType,ServiceName,count(*) as Count,max(inserteddate) as MaxTime,min(inserteddate) as MinTime from Fault (NOLOCK)
+	set @filterStatement = 'select distinct ''' + cast(@alertId as varchar(50)) + ''' ,Application,ServiceName,ExceptionType,count(*) as Count,max(datetime) as MaxTime,min(datetime) as MinTime from Fault (NOLOCK)
 				where InsertedDate >= ''' + convert(varchar(25), @lastfired, 120)  
 				+ ''' and InsertedDate < ''' + convert(varchar(25), @now, 120)  
 				+ ''' and ' + @conditionsString +
