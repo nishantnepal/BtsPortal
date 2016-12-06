@@ -8,8 +8,11 @@ namespace BtsPortal.Services.EsbAlert
             => ConfigurationManager.ConnectionStrings["EsbExceptionDbConnection"].ConnectionString;
 
         public const string SERVICE_NAME = "BtsPortal.Alert";
+        public const string PORTAL_ROOT_PATH = "{PORTAL_ROOT_PATH}";
         public const int DEFAULT_INTERVAL = 60000;
         public const int DEFAULT_BATCH_SIZE = 500;
         public const int DEFAULT_SMTP_PORT = 2525;
+
+
     }
 }

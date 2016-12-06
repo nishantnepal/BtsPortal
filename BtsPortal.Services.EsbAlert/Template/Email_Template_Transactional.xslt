@@ -57,7 +57,7 @@
                   <td style="border: 1px solid #dddddd;text-align: left;padding: 8px;font-size: 12px;">
                     <a target="_blank" >
                       <xsl:attribute name="href">
-                        http://localhost/portal/Esb/Fault?Request.FaultId=<xsl:value-of select="FaultId"/>
+                       {PORTAL_ROOT_PATH}/Esb/Fault?Request.FaultId=<xsl:value-of select="FaultId"/>
                       </xsl:attribute>
                       Detail
                     </a>
@@ -91,7 +91,7 @@
                             font-weight: normal;color: #428bca;padding: 1px 5px;font-size: 12px;line-height: 1.5;border-radius: 3px;
                             font-family:open_sansregular,Calibri,Arial,sans-serif" target="_blank" >
                       <xsl:attribute name="href">
-                        http://localhost/portal/Esb/Fault?Init=True&amp;Status=UnResolved&amp;Application=<xsl:value-of select="ArrayOfFaultDetail/FaultDetail[1]/Application"/>
+                       {PORTAL_ROOT_PATH}/Esb/Fault?Init=True&amp;Status=UnResolved&amp;Application=<xsl:value-of select="ArrayOfFaultDetail/FaultDetail[1]/Application"/>
                       </xsl:attribute>
                       View Application Faults
                     </a>
@@ -105,7 +105,7 @@
                             font-family:open_sansregular,Calibri,Arial,sans-serif"
                        target="_blank">
                       <xsl:attribute name="href">
-                        http://localhost/portal/Esb/Alert
+                       {PORTAL_ROOT_PATH}/Esb/Alert
                       </xsl:attribute>My Subscriptions
                     </a>
                   </li>

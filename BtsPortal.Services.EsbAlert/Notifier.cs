@@ -41,6 +41,7 @@ namespace BtsPortal.Services.EsbAlert
                 string emailSender = esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "SENDER")?.Value;
                 string xsltPath = esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "XSLTPATH")?.Value;
                 string summaryXsltPath = esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "XSLTSUMMARYPATH")?.Value;
+                string portalRootPath = esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "BTSPORTALROOTPATH")?.Value;
                 try
                 {
                     qInterval = Convert.ToInt32(esbConfiguration.FirstOrDefault(m => m.Name.ToUpper() == "EMAILINTERVAL")?.Value);
@@ -94,7 +95,7 @@ namespace BtsPortal.Services.EsbAlert
                         if (proceed)
                         {
                             var data = _esbExceptionDbRepo.GetAlertEmails(qBatchSize);
-                            ProcessNotifications(data, smtpServer, emailSender, xsltPath, summaryXsltPath, smtpPort, smtpUserName, smtpPassword, smtpUseSsl);
+                            ProcessNotifications(data, smtpServer, emailSender, xsltPath, summaryXsltPath, smtpPort, smtpUserName, smtpPassword, smtpUseSsl, portalRootPath);
                             _esbExceptionDbRepo.UpdateAlertEmails(data);
                         }
 
@@ -128,8 +129,7 @@ namespace BtsPortal.Services.EsbAlert
             }
         }
 
-        private void ProcessNotifications(List<AlertEmailNotification> data, string smtpServer, string sender
-            , string xsltPath, string summaryXsltPath, int? smptPort, string userName, string password, bool? enableSsl)
+        private void ProcessNotifications(List<AlertEmailNotification> data, string smtpServer, string sender, string xsltPath, string summaryXsltPath, int? smptPort, string userName, string password, bool? enableSsl, string portalRootPath)
         {
             var transform = new XslCompiledTransform();
             XsltSettings settings = new XsltSettings { EnableScript = true };
@@ -145,6 +145,8 @@ namespace BtsPortal.Services.EsbAlert
                     string mailBody = notification.IsSummaryAlert
                                         ? GetHtmlMailBody(notification, summaryTransform)
                                         : GetHtmlMailBody(notification, transform);
+
+                    mailBody = mailBody.Replace(AppSettings.PORTAL_ROOT_PATH, portalRootPath);
                     using (MailMessage message = new MailMessage(sender, notification.To, notification.Subject, mailBody))
                     {
                         message.IsBodyHtml = true;

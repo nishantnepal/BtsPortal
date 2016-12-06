@@ -159,3 +159,7 @@ insert into [Configuration]([Name]  ,[Value],[Description])
   if not exists (select 1 from Configuration where name='SmtpEnableSsl')
   insert into [Configuration]([Name]  ,[Value],[Description])
   values ('SmtpEnableSsl','false','[Optional]Use ssl for connecting to the smtp server')
+
+  if not exists (select 1 from Configuration where name='BtsPortalRootPath')
+  insert into [Configuration]([Name]  ,[Value],[Description])
+  values ('BtsPortalRootPath','http://localhost/btsportal','Root path for the bts portal. Used for links in alert emails.')
