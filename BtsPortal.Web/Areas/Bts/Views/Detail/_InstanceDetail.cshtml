@@ -72,7 +72,7 @@
                             </tr>
                             <tr>
                                 <td><b>Suspend DateTime</b></td>
-                                <td>@Model.SuspendDateTime?.ToString(AppSettings.DateTimeDisplay)</td>
+                                <td>@Model.SuspendDateTime.GetValueOrDefault().ToString(AppSettings.DateTimeDisplay)</td>
                             </tr>
                             <tr>
                                 <td><b>Error Description</b></td>

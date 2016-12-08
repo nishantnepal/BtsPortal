@@ -113,12 +113,6 @@ ORDER BY application
 --	@pageNum int = 1,
 --	@pageSize int = 100
 
---set @fromDateTime = '08/01/2015'
---set @toDateTime = GETDATE()
---set @application = 'Match_Claims'
-----set @faultId = '0de3b300-d856-4158-9992-3ec0eace8729'
---set @message = '000000382'
-
 select distinct
 Application, 
 FaultSeverity, 
@@ -144,7 +138,7 @@ and cast(f.FaultID as varchar(50)) like '%' + ISNULL(@faultId,cast(f.FaultID as 
 and isnull(f.ErrorType,'')  like '%' + ISNULL(@errorType,f.ErrorType) + '%'
 and isnull(f.ErrorType,'') = ISNULL(@errorTypeExact,f.ErrorType)
 and isnull(f.FaultCode,'')  like '%' + ISNULL(@faultCode,f.FaultCode) + '%'
-and isnull(md.MessageData,'')  like '%' + ISNULL(@message,md.MessageData) + '%'
+and (md.MessageData is null or md.MessageData  like '%' + ISNULL(@message,md.MessageData) + '%')
 and isnull(f.FailureCategory,'')  like '%' + ISNULL(@failureCategory,f.FailureCategory) + '%'
 and isnull(f.Scope,'')  like '%' + ISNULL(@failureScope,f.Scope) + '%'
 order by f.DateTime desc
@@ -745,6 +739,13 @@ BEGIN
 	
     truncate table #tempFaults2
 
+	update [dbo].[Portal_Alert]
+	set [LastFired] = GETDATE()
+	where [AlertID] = @alertId
+
+	if @@ROWCOUNT = 0 
+		insert into [dbo].[Portal_Alert](AlertID, IsSummaryAlert, LastFired)
+		values(@alertId,0,GETDATE())
       
     FETCH NEXT FROM alert_cursor   
     INTO @alertId, @conditionsString   

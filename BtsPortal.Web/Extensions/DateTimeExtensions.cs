@@ -34,5 +34,15 @@ namespace BtsPortal.Web.Extensions
 
             return Convert.ToDateTime(dbDateTime).ToString(AppSettings.DateTimeDisplay);
         }
+
+        public static string ToDisplayDateTime(this DateTime? dbDateTime)
+        {
+            if (!dbDateTime.HasValue)
+            {
+                return String.Empty;
+            }
+
+            return dbDateTime.Value.ToString(AppSettings.DateTimeDisplay);
+        }
     }
 }

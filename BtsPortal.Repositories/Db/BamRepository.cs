@@ -71,8 +71,16 @@ namespace BtsPortal.Repositories.Db
                     {
                         foreach (KeyValuePair<string, string> pair in parameters)
                         {
-                            da.SelectCommand.Parameters.AddWithValue(pair.Key, pair.Value);
+                            if (string.IsNullOrWhiteSpace(pair.Value))
+                            {
+                                da.SelectCommand.Parameters.AddWithValue(pair.Key, DBNull.Value);
+                            }
+                            else
+                            {
+                                da.SelectCommand.Parameters.AddWithValue(pair.Key, pair.Value);
+                            }
                         }
+
                     }
 
                     ds = new DataSet();

@@ -1,4 +1,5 @@
 ﻿@using BtsPortal.Entities.Esb
+@using BtsPortal.Web.Extensions
 @using BtsPortal.Web.Infrastructure.Settings
 @model BtsPortal.Entities.Esb.EsbUserAlertSubscription
 @{
@@ -40,6 +41,7 @@
                             <th>Condition</th>
                             <th>Owner</th>
                             <th>Create Date</th>
+                            <th>Last Fired</th>
                             <th>Subscribers</th>
                             <th></th>
                         </tr>
@@ -75,6 +77,10 @@
                                 </td>
                                 <td>
                                     <span class="span-width-100">@item.InsertedDate.ToString(AppSettings.DateTimeDisplay)</span>
+
+                                </td>
+                                <td>
+                                    <span class="span-width-100">@item.LastFired.ToDisplayDateTime()</span>
 
                                 </td>
                                 <td title="@item.Subscribers">
