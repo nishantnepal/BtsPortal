@@ -1,0 +1,26 @@
+﻿@{
+    ViewBag.Title = "AccessDenied";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string roles = ViewBag.Roles ?? string.Empty;
+}
+
+<p>&nbsp;</p>
+<h2>Access Denied</h2>
+
+<div class="well well-lg">
+    @if (ViewBag.error != null)
+    {
+        <span>@ViewBag.error</span>
+    }
+    else
+    {
+        <span> You must be a member of one of the following roles to be able to access this page</span>
+        <br /><br />
+        foreach (string role in roles.Split(','))
+        {
+            <div>@role</div>
+        }
+    }
+
+</div>
+

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Web.Mvc;
+using BtsPortal.Web.Controllers;
 using BtsPortal.Web.Repository;
 using BtsPortal.Web.ViewModels;
 
 namespace BtsPortal.Web.Areas.Esb.Controllers
 {
-    public class FaultSettingsController : Controller
+    public class FaultSettingsController : BaseController
     {
         private readonly CachedEsbExceptionDbRepository _esbExcRepository;
         public FaultSettingsController()

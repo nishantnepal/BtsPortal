@@ -158,6 +158,8 @@
     <Compile Include="Areas\Esb\Controllers\FaultController.cs" />
     <Compile Include="Areas\Esb\Controllers\FaultSettingsController.cs" />
     <Compile Include="Areas\Esb\EsbAreaRegistration.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
@@ -165,6 +167,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Infrastructure\Authorization\PortalAuthorization.cs" />
+    <Compile Include="Infrastructure\Authorization\PortalAuthorizationConfig.cs" />
+    <Compile Include="Infrastructure\Authorization\PortalAuthorizeAttribute.cs" />
     <Compile Include="Infrastructure\Settings\AppSettings.cs" />
     <Compile Include="Infrastructure\Settings\CacheKey.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -359,7 +364,9 @@
     <Content Include="Scripts\site-esb.js" />
     <Content Include="Scripts\site.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -373,12 +380,15 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Error\AccessDenied.cshtml" />
+    <Content Include="Views\Error\_AccessDenied.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Bam\Models\" />
     <Folder Include="Areas\Bam\Views\Shared\" />
     <Folder Include="Areas\Bts\Views\Shared\" />
+    <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

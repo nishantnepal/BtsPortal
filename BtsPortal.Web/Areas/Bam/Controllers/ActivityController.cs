@@ -5,12 +5,13 @@ using System.Web.Mvc;
 using BtsPortal.Cache;
 using BtsPortal.Entities.Bam;
 using BtsPortal.Repositories.Interface;
+using BtsPortal.Web.Controllers;
 using BtsPortal.Web.Infrastructure.Settings;
 using BtsPortal.Web.ViewModels;
 
 namespace BtsPortal.Web.Areas.Bam.Controllers
 {
-    public class ActivityController : Controller
+    public class ActivityController : BaseController
     {
         private readonly IBamRepository _bamRepository;
         private readonly IBtsPortalRepository _btsPortalRepository;

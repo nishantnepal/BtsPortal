@@ -5,13 +5,14 @@ using System.Web.Mvc;
 using BtsPortal.Entities.Bts;
 using BtsPortal.Entities.Esb;
 using BtsPortal.Repositories.Interface;
+using BtsPortal.Web.Controllers;
 using BtsPortal.Web.Models.Exceptions;
 using BtsPortal.Web.ViewModels;
 using BtsPortal.Web.ViewModels.Bts;
 
 namespace BtsPortal.Web.Areas.Bts.Controllers
 {
-    public class BtsOpsController : Controller
+    public class BtsOpsController : BaseController
     {
         private readonly IBizTalkRepository _biztalkRepo;
         private readonly ISsoDbRepository _ssoRepo;
@@ -153,23 +154,7 @@ namespace BtsPortal.Web.Areas.Bts.Controllers
             return Json(wrapper, JsonRequestBehavior.AllowGet);
         }
 
-        //public JsonResult CreateNewSsoApp(string appName)
-        //{
-        //    JsonResultWrapper wrapper = new JsonResultWrapper { Success = true };
-        //    try
-        //    {
-        //        _ssoRepo.CreateNewApp(appName);
-        //        wrapper.Data = "Success.";
-        //    }
-        //    catch (Exception exception)
-        //    {
-        //        wrapper.Success = false;
-        //        wrapper.Error = exception.Message;
-        //    }
-
-        //    return Json(wrapper, JsonRequestBehavior.AllowGet);
-        //}
-
+        
         public JsonResult UpdateEdiBatchStatus(BtsEdiBatchOrchestrationAction action, int batchId, string batchName, string agreementName, string sendingPartner, string receivingPartner, int oneWayAgreementId)
         {
             JsonResultWrapper wrapper = new JsonResultWrapper { Success = true };

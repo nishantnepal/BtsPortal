@@ -38,6 +38,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BtsPortal.Repositories.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BtsPortal.Web.Tests", "Tests\BtsPortal.Web.Tests\BtsPortal.Web.Tests.csproj", "{73BC90E4-BAD1-49BE-B980-C432F323D640}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{A1181BD4-68EC-4821-821F-2B784239A348}"
+	ProjectSection(SolutionItems) = preProject
+		Docs\BtsPortal_Installation.docx = Docs\BtsPortal_Installation.docx
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

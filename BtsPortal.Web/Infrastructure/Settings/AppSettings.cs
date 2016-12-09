@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using BtsPortal.Web.Infrastructure.Authorization;
 
 namespace BtsPortal.Web.Infrastructure.Settings
 {
@@ -33,6 +34,7 @@ namespace BtsPortal.Web.Infrastructure.Settings
                 return Convert.ToBoolean(ConfigurationManager.AppSettings["BtsPortal_EnableEdi"]);
             }
         }
-        public static string AllowedWindowsADGroup => ConfigurationManager.AppSettings["AllowedWindowsADGroup"];
+
+        public static PortalAuthConfigSection PortalAuth => ConfigurationManager.GetSection(PortalAuthConfigSection.SECTION_NAME) as PortalAuthConfigSection;
     }
 }

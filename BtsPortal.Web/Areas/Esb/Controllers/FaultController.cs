@@ -4,6 +4,7 @@ using System.IO;
 using System.Web.Mvc;
 using BtsPortal.Entities.Esb;
 using BtsPortal.Repositories.Interface;
+using BtsPortal.Web.Controllers;
 using BtsPortal.Web.Extensions;
 using BtsPortal.Web.Infrastructure.Settings;
 using BtsPortal.Web.ViewModels;
@@ -11,7 +12,7 @@ using BtsPortal.Web.ViewModels.Esb;
 
 namespace BtsPortal.Web.Areas.Esb.Controllers
 {
-    public class FaultController : Controller
+    public class FaultController : BaseController
     {
         private readonly IEsbExceptionDbRepository _esbExcRepository;
         private readonly IBizTalkRepository _btsRepository;

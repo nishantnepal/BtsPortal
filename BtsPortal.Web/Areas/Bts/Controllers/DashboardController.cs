@@ -4,13 +4,14 @@ using System.Linq;
 using System.Web.Mvc;
 using BtsPortal.Entities.Bts;
 using BtsPortal.Repositories.Interface;
+using BtsPortal.Web.Controllers;
 using BtsPortal.Web.Extensions;
 using BtsPortal.Web.Infrastructure.Settings;
 using BtsPortal.Web.ViewModels;
 
 namespace BtsPortal.Web.Areas.Bts.Controllers
 {
-    public class DashboardController : Controller
+    public class DashboardController : BaseController
     {
         private readonly IBizTalkMsgBoxRepository _bizTalkMsgBoxRepo;
         private readonly IBizTalkRepository _biztalkRepo;
