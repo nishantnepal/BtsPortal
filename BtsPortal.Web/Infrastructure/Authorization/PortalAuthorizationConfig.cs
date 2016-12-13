@@ -20,6 +20,9 @@ namespace BtsPortal.Web.Infrastructure.Authorization
 
         [ConfigurationProperty("AllowedRoles")]
         public string AllowedRoles => base["AllowedRoles"] as string;
+
+        [ConfigurationProperty("AllowedUsers")]
+        public string AllowedUsers => base["AllowedUsers"] as string;
     }
 
     [ConfigurationCollection(typeof(PortalAuthorizationConfigElement), AddItemName = "PortalAuth", CollectionType = ConfigurationElementCollectionType.BasicMap)]
