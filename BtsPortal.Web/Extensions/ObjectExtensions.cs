@@ -75,6 +75,8 @@ namespace BtsPortal.Web.Extensions
 
                 builder.AppendLine("<tr>").Append("<td>Physical</td>").Append("<td>&nbsp;</td>").Append("<td>").Append(string.Format(" <span class='span-width-250'>{0}</span>", port.PhysicalPortName)).Append("</td>").AppendLine("</tr>");
 
+                builder.AppendLine("<tr>").Append("<td>&nbsp;</td><td>&nbsp;</td>").Append("<td>&nbsp;</td>").AppendLine("</tr>");
+                builder.AppendLine("<tr>").Append("<td>&nbsp;</td><td>&nbsp;</td>").Append("<td>&nbsp;</td>").AppendLine("</tr>");
             }
 
             builder.AppendLine("</table>");

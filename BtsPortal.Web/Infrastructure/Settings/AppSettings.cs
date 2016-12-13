@@ -35,6 +35,19 @@ namespace BtsPortal.Web.Infrastructure.Settings
             }
         }
 
+        public static bool EnableBam
+        {
+            get
+            {
+                if (ConfigurationManager.AppSettings["BtsPortal_EnableBam"] == null)
+                {
+                    return true;
+                }
+
+                return Convert.ToBoolean(ConfigurationManager.AppSettings["BtsPortal_EnableBam"]);
+            }
+        }
+
         public static PortalAuthConfigSection PortalAuth => ConfigurationManager.GetSection(PortalAuthConfigSection.SECTION_NAME) as PortalAuthConfigSection;
     }
 }

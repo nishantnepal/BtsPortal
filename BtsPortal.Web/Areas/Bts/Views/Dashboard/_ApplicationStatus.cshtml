@@ -6,88 +6,92 @@
 <br />
 <br />
 <div class="container">
-@if (@ViewBag.error != null)
-{
-    <div class="alert alert-danger">
-        @ViewBag.error
-    </div>
-}
-<ul class="nav nav-tabs" id="artifactsTab">
-    <li class="active">
-        <a data-toggle="tab" href="#orch">Orchestration</a>
-    </li>
-    <li>
-        <a data-toggle="tab" href="#sendPorts">Send Ports</a>
-    </li>
-    <li>
-        <a data-toggle="tab" href="#recPorts">Receive Ports</a>
-    </li>
-</ul>
-<div class="tab-content">
-<div class="container tab-pane fade in active" id="orch">
-    <br/>
-    <div class="row" style="width: 90%">
-        <div class="btn-group btn-group-sm pull-right">
-            <button class="btn btn-default" onclick="orchOperation('@BtsArtifactAction.Start', '@Model.Name', '')">
-                <i class="fa fa-check-circle fa-2" style="color: green"></i> Start All
-            </button>
-            <button class="btn btn-default" onclick="orchOperation('@BtsArtifactAction.Stop', '@Model.Name',
+    @if (@ViewBag.error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.error
+        </div>
+    }
+    <ul class="nav nav-tabs" id="artifactsTab">
+        <li class="active">
+            <a data-toggle="tab" href="#orch">Orchestration</a>
+        </li>
+        <li>
+            <a data-toggle="tab" href="#sendPorts">Send Ports</a>
+        </li>
+        <li>
+            <a data-toggle="tab" href="#recPorts">Receive Ports</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="container tab-pane fade in active" id="orch">
+            <br />
+            <div class="row" style="width: 90%">
+                <div class="btn-group btn-group-sm pull-right">
+                    <button class="btn btn-default" onclick="orchOperation('@BtsArtifactAction.Start', '@Model.Name', '')">
+                        <i class="fa fa-check-circle fa-2" style="color: green"></i> Start All
+                    </button>
+                    <button class="btn btn-default" onclick="orchOperation('@BtsArtifactAction.Stop', '@Model.Name',
     '')">
-                <i class="fa fa-exclamation-circle" aria-hidden="true" style="color: red"></i> Stop All
-            </button>
-            <button class="btn btn-default btn-xs" onclick="orchOperation('@BtsArtifactAction.Unenlist', '@Model.Name', '')">
-                <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color: red"></i> Unenlist All
-            </button>
-        </div><br/>
-    </div>
-    <table class="table table-hover table-responsive table-striped table-font12">
-        <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Host</th>
-            @*<th>tracking</th>*@
-            <th></th>
-            <th></th>
-        </tr>
-        @foreach (var item in Model.Orchestrations)
-        {
-            <tr>
-                <td title="@item.Status">
-                    @if (item.Status == BtsArtifactStatus.Started)
-                    {
-                        <i class="fa fa-check-circle fa-2" style="color: green"></i>
-                    }
-                    else if (item.Status == BtsArtifactStatus.Enlisted)
-                    {
-                        <i class="fa fa-exclamation-circle fa-2" aria-hidden="true" style="color: red"></i>
-                    }
-                    else if (item.Status == BtsArtifactStatus.Unenlisted)
-                    {
-                        <i class="fa fa-exclamation-triangle fa-2" aria-hidden="true" style="color: red"></i>
-                    }
-                </td>
-                <td>@item.Name</td>
-                <td>@item.HostName</td>
-                <td>
-                    <table>
-                        <tr>
-                            <td>@if (!string.IsNullOrWhiteSpace(item.Tracking) && item.Tracking.ToUpper() != "NONE")
-                                {
-                                    <div class="alphabetCircle btsError" data-toggle="tooltip" data-html="true" data-placement="left" title="@item.Tracking">T</div>
-                                }
-                                else
-                                {
-                                    <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Tracking Disabled">T</div>
-                                }</td>
-                            <td>@if (item.Ports.Count > 0)
+                        <i class="fa fa-exclamation-circle" aria-hidden="true" style="color: red"></i> Stop All
+                    </button>
+                    <button class="btn btn-default btn-xs" onclick="orchOperation('@BtsArtifactAction.Unenlist', '@Model.Name', '')">
+                        <i class="fa fa-exclamation-triangle" aria-hidden="true" style="color: red"></i> Unenlist All
+                    </button>
+                </div><br />
+            </div>
+            <table class="table table-hover table-responsive table-striped table-font12">
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Host</th>
+                    @*<th>tracking</th>*@
+                    <th></th>
+                    <th></th>
+                </tr>
+                @foreach (var item in Model.Orchestrations)
+                {
+                    <tr>
+                        <td title="@item.Status">
+                            @if (item.Status == BtsArtifactStatus.Started)
+                            {
+                                <i class="fa fa-check-circle fa-2" style="color: green"></i>
+                            }
+                            else if (item.Status == BtsArtifactStatus.Enlisted)
+                            {
+                                <i class="fa fa-exclamation-circle fa-2" aria-hidden="true" style="color: red"></i>
+                            }
+                            else if (item.Status == BtsArtifactStatus.Unenlisted)
+                            {
+                                <i class="fa fa-exclamation-triangle fa-2" aria-hidden="true" style="color: red"></i>
+                            }
+                        </td>
+                        <td>@item.Name</td>
+                        <td>@item.HostName</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>
+                                        @if (!string.IsNullOrWhiteSpace(item.Tracking) && item.Tracking.ToUpper() != "NONE")
+                                    {
+                                        <div class="alphabetCircle btsError" data-toggle="tooltip" data-html="true" data-placement="left" title="@item.Tracking">T</div>
+                                    }
+                                    else
+                                    {
+                                        <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Tracking Disabled">T</div>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.Ports.Count > 0)
                                 {
                                     <div class="alphabetCircle btsSuccess" data-toggle="popover" data-html="true" data-placement="left" data-content="@item.Ports.ToHtmlTable()" data-original-title="Bindings" data-trigger="hover">B</div>
 
-                            }
-                            else
-                            {
+                                }
+                                else
+                                {
                                     <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="No Bindings">B</div>
-                                }</td>
+                                }
+                            </td>
                         </tr>
 
                     </table>
@@ -131,369 +135,359 @@
                             <i class="fa fa-exclamation-triangle fa-2" aria-hidden="true" style="color: red"></i> Unenlist
                         </button>
                     }
-                            @*<a class="btn btn-default btn-xs" href="#" onclick="orchOperation('@BtsArtifactAction.Start', '@Model.Name', '@item.Name')">
-                                    <i class="fa fa-check-circle fa-2" style="color: green"></i> Start
-                                </a>
-                                <a class="btn btn-default btn-xs" href="#" onclick="orchOperation('@BtsArtifactAction.Start', '@Model.Name', '@item.Name')">
-                                    <i class="fa fa-check-circle fa-2" aria-hidden="true" style="color: red"></i> Stop
-                                </a>
-                                <a class="btn btn-default btn-xs" href="#" onclick="orchOperation('@BtsArtifactAction.Start', '@Model.Name', '@item.Name')">
-                                    <i class="fa fa-check-circle fa-2" aria-hidden="true" style="color: red"></i> Unenlist
-                                </a>*@</td>
+                </td>
 
             </tr>
-        }
-    </table>
-</div>
+                }
+            </table>
+        </div>
 
-<div class="container tab-pane fade" id="sendPorts">
-    <br/>
-    <div class="row" style="width: 90%">
-        <div class="btn-group btn-group-sm pull-right">
-            <button class="btn btn-default " onclick="sendPortOperation('@BtsArtifactAction.Start', '@Model.Name', '')">
-                <i class="fa fa-check-circle fa-2" style="color: green"></i> Start All
-            </button>
-            <button class="btn btn-default" onclick="sendPortOperation('@BtsArtifactAction.Stop', '@Model.Name', '')">
-                <i class="fa fa-exclamation-circle fa-2" aria-hidden="true" style="color: red"></i> Stop All
-            </button>
-            <button class="btn btn-default" onclick="orchOperation('@BtsArtifactAction.Unenlist', '@Model.Name', '')">
-                <i class="fa fa-exclamation-triangle fa-2" aria-hidden="true" style="color: red"></i> Unenlist All
-            </button>
-        </div><br/>
-    </div>
-    <table class="table table-hover table-responsive table-striped table-font12">
-        <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Uri</th>
-            <th>Adapter</th>
-            <th>Host</th>
-            <th></th>
-            @*<th></th>
-                    <th></th>*@
-            <th></th>
-        </tr>
-        @foreach (var item in Model.SendPorts)
-        {
-            <tr>
-                <td title="@item.Status">
-                    @if (item.Status == BtsArtifactStatus.Started)
-                    {
-                        <i class="fa fa-check-circle fa-2" style="color: green"></i>
-                    }
-                    else if (item.Status == BtsArtifactStatus.Stopped)
-                    {
-                        <i class="fa fa-exclamation-circle fa-2" aria-hidden="true" style="color: red"></i>
-                    }
-                    else if (item.Status == BtsArtifactStatus.Bound)
-                    {
-                        <i class="fa fa-exclamation-triangle fa-2" aria-hidden="true" style="color: red"></i>
-                    }
-                </td>
-                <td>
-                    <span class="span-width-100">
+        <div class="container tab-pane fade" id="sendPorts">
+            <br />
+            <div class="row" style="width: 90%">
+                <div class="btn-group btn-group-sm pull-right">
+                    <button class="btn btn-default " onclick="sendPortOperation('@BtsArtifactAction.Start', '@Model.Name', '')">
+                        <i class="fa fa-check-circle fa-2" style="color: green"></i> Start All
+                    </button>
+                    <button class="btn btn-default" onclick="sendPortOperation('@BtsArtifactAction.Stop', '@Model.Name', '')">
+                        <i class="fa fa-exclamation-circle fa-2" aria-hidden="true" style="color: red"></i> Stop All
+                    </button>
+                    <button class="btn btn-default" onclick="orchOperation('@BtsArtifactAction.Unenlist', '@Model.Name', '')">
+                        <i class="fa fa-exclamation-triangle fa-2" aria-hidden="true" style="color: red"></i> Unenlist All
+                    </button>
+                </div><br />
+            </div>
+            <table class="table table-hover table-responsive table-striped table-font12">
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Uri</th>
+                    <th>Adapter</th>
+                    <th>Host</th>
+                    <th></th>
+                    @*<th></th>
+                        <th></th>*@
+                    <th></th>
+                </tr>
+                @foreach (var item in Model.SendPorts)
+                {
+                    <tr>
+                        <td title="@item.Status">
+                            @if (item.Status == BtsArtifactStatus.Started)
+                            {
+                                <i class="fa fa-check-circle fa-2" style="color: green"></i>
+                            }
+                            else if (item.Status == BtsArtifactStatus.Stopped)
+                            {
+                                <i class="fa fa-exclamation-circle fa-2" aria-hidden="true" style="color: red"></i>
+                            }
+                            else if (item.Status == BtsArtifactStatus.Bound)
+                            {
+                                <i class="fa fa-exclamation-triangle fa-2" aria-hidden="true" style="color: red"></i>
+                            }
+                        </td>
+                        <td>
+                            <span class="span-width-100">
                                 @item.Name
                             </span>
 
-                </td>
-                <td>
-                    <span class="span-width-100">
+                        </td>
+                        <td>
+                            <span class="span-width-100">
                                 @item.Address
                             </span>
-                </td>
-                <td>@item.Adapter</td>
-                <td>@item.HostName</td>
-                <td>
-                    <table>
-                        <tr>
-                            <td>
-                                @if (!string.IsNullOrWhiteSpace(item.Tracking) && item.Tracking.ToUpper() != "0")
-                                {
-                                    <div class="alphabetCircle btsError" data-toggle="tooltip" data-html="true" data-placement="left" title="@item.Tracking">T</div>
-                                }
-                                else
-                                {
-                                    <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Tracking Disabled">T</div>
-                                }
-                            </td>
-                            <td>
-                                @if (!string.IsNullOrWhiteSpace(item.Filter))
-                                {
-                                    <div class="alphabetCircle btsWarning" data-toggle="tooltip" data-html="true" data-placement="left" title="@item.FilterTable">F</div>
-                                }
-                                else
-                                {
-                                    <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="No Filters">F</div>
-                                }
-                            </td>
-                            <td>
-                                @if (item.RouteFailedMessages)
-                                {
-                                    <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Route Failed Message Enabled">RF</div>
-                                }
-                                else
-                                {
-                                    <div class="alphabetCircle btsWarning" data-toggle="tooltip" data-html="true" data-placement="left" title="Route Failed Message Disabled">RF</div>
-                                }
-                            </td>
-                            <td>
-                                @if (item.Dynamic)
-                                {
-                                    <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Dynamic Port Type">PT</div>
-                                }
-                                else
-                                {
-                                    <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Static Port Type">PT</div>
-                                }
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4">&nbsp</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                @if (item.OrderedDelivery)
-                                {
-                                    <div class="alphabetCircle btsWarning" data-toggle="tooltip" data-html="true" data-placement="left" title="Ordered Delivery">OD</div>
-                                }
-                                else
-                                {
-                                    <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Ordered Delivery disabled">OD</div>
-                                }
-                            </td>
-                            <td></td>
-                        </tr>
+                        </td>
+                        <td>@item.Adapter</td>
+                        <td>@item.HostName</td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>
+                                        @if (!string.IsNullOrWhiteSpace(item.Tracking) && item.Tracking.ToUpper() != "0")
+                                        {
+                                            <div class="alphabetCircle btsError" data-toggle="tooltip" data-html="true" data-placement="left" title="@item.Tracking">T</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Tracking Disabled">T</div>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrWhiteSpace(item.Filter))
+                                        {
+                                            <div class="alphabetCircle btsWarning" data-toggle="tooltip" data-html="true" data-placement="left" title="@item.FilterTable">F</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="No Filters">F</div>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.RouteFailedMessages)
+                                        {
+                                            <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Route Failed Message Enabled">RF</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="alphabetCircle btsWarning" data-toggle="tooltip" data-html="true" data-placement="left" title="Route Failed Message Disabled">RF</div>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.Dynamic)
+                                        {
+                                            <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Dynamic Port Type">PT</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Static Port Type">PT</div>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">&nbsp</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @if (item.OrderedDelivery)
+                                        {
+                                            <div class="alphabetCircle btsWarning" data-toggle="tooltip" data-html="true" data-placement="left" title="Ordered Delivery">OD</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Ordered Delivery disabled">OD</div>
+                                        }
+                                    </td>
+                                    <td></td>
+                                </tr>
 
-                    </table>
+                            </table>
 
-                </td>
+                        </td>
 
-                <td>
-                    @switch (item.Status)
-                    {
-                        case BtsArtifactStatus.Started:
-                            <button class="btn btn-default btn-xs" onclick="sendPortOperation('@BtsArtifactAction.Start', '@Model.Name', '@item.Name')" disabled="disabled">
-                                <i class="fa fa-check-circle fa-2" style="color: green"></i> Start
-                            </button>
-                            <button class="btn btn-default btn-xs" onclick="sendPortOperation('@BtsArtifactAction.Stop', '@Model.Name', '@item.Name')">
-                                <i class="fa fa-exclamation-circle fa-2" aria-hidden="true" style="color: red"></i> Stop
-                            </button>
-                            <button class="btn btn-default btn-xs" onclick="orchOperation('@BtsArtifactAction.Unenlist', '@Model.Name', '@item.Name')">
-                                <i class="fa fa-exclamation-triangle fa-2" aria-hidden="true" style="color: red"></i> Unenlist
-                            </button>
-                            break;
-                        case BtsArtifactStatus.Stopped:
-                            <button class="btn btn-default btn-xs" onclick="sendPortOperation('@BtsArtifactAction.Start', '@Model.Name', '@item.Name')">
-                                <i class="fa fa-check-circle fa-2" style="color: green"></i> Start
-                            </button>
-                            <button class="btn btn-default btn-xs" onclick="sendPortOperation('@BtsArtifactAction.Stop', '@Model.Name', '@item.Name')" disabled="disabled">
-                                <i class="fa fa-check-circle fa-2" aria-hidden="true" style="color: red"></i> Stop
-                            </button>
-                            <button class="btn btn-default btn-xs" onclick="sendPortOperation('@BtsArtifactAction.Unenlist', '@Model.Name', '@item.Name')">
-                                <i class="fa fa-exclamation-triangle fa-2" aria-hidden="true" style="color: red"></i> Unenlist
-                            </button>
-                            break;
-                        case BtsArtifactStatus.Bound:
-                            <button class="btn btn-default btn-xs" onclick="sendPortOperation('@BtsArtifactAction.Start', '@Model.Name', '@item.Name')">
-                                <i class="fa fa-check-circle fa-2" style="color: green"></i> Start
-                            </button>
-                            <button class="btn btn-default btn-xs" onclick="sendPortOperation('@BtsArtifactAction.Stop', '@Model.Name', '@item.Name')">
-                                <i class="fa fa-check-circle fa-2" aria-hidden="true" style="color: red"></i> Stop
-                            </button>
-                            <button class="btn btn-default btn-xs" onclick="sendPortOperation('@BtsArtifactAction.Unenlist', '@Model.Name', '@item.Name')" disabled="disabled">
-                                <i class="fa fa-exclamation-triangle fa-2" aria-hidden="true" style="color: red"></i> Unenlist
-                            </button>
-                            break;
-                    }
+                        <td>
+                            @switch (item.Status)
+                            {
+                                case BtsArtifactStatus.Started:
+                                    <button class="btn btn-default btn-xs" onclick="sendPortOperation('@BtsArtifactAction.Start', '@Model.Name', '@item.Name')" disabled="disabled">
+                                        <i class="fa fa-check-circle fa-2" style="color: green"></i> Start
+                                    </button>
+                                    <button class="btn btn-default btn-xs" onclick="sendPortOperation('@BtsArtifactAction.Stop', '@Model.Name', '@item.Name')">
+                                        <i class="fa fa-exclamation-circle fa-2" aria-hidden="true" style="color: red"></i> Stop
+                                    </button>
+                                    <button class="btn btn-default btn-xs" onclick="orchOperation('@BtsArtifactAction.Unenlist', '@Model.Name', '@item.Name')">
+                                        <i class="fa fa-exclamation-triangle fa-2" aria-hidden="true" style="color: red"></i> Unenlist
+                                    </button>
+                                    break;
+                                case BtsArtifactStatus.Stopped:
+                                    <button class="btn btn-default btn-xs" onclick="sendPortOperation('@BtsArtifactAction.Start', '@Model.Name', '@item.Name')">
+                                        <i class="fa fa-check-circle fa-2" style="color: green"></i> Start
+                                    </button>
+                                    <button class="btn btn-default btn-xs" onclick="sendPortOperation('@BtsArtifactAction.Stop', '@Model.Name', '@item.Name')" disabled="disabled">
+                                        <i class="fa fa-check-circle fa-2" aria-hidden="true" style="color: red"></i> Stop
+                                    </button>
+                                    <button class="btn btn-default btn-xs" onclick="sendPortOperation('@BtsArtifactAction.Unenlist', '@Model.Name', '@item.Name')">
+                                        <i class="fa fa-exclamation-triangle fa-2" aria-hidden="true" style="color: red"></i> Unenlist
+                                    </button>
+                                    break;
+                                case BtsArtifactStatus.Bound:
+                                    <button class="btn btn-default btn-xs" onclick="sendPortOperation('@BtsArtifactAction.Start', '@Model.Name', '@item.Name')">
+                                        <i class="fa fa-check-circle fa-2" style="color: green"></i> Start
+                                    </button>
+                                    <button class="btn btn-default btn-xs" onclick="sendPortOperation('@BtsArtifactAction.Stop', '@Model.Name', '@item.Name')">
+                                        <i class="fa fa-check-circle fa-2" aria-hidden="true" style="color: red"></i> Stop
+                                    </button>
+                                    <button class="btn btn-default btn-xs" onclick="sendPortOperation('@BtsArtifactAction.Unenlist', '@Model.Name', '@item.Name')" disabled="disabled">
+                                        <i class="fa fa-exclamation-triangle fa-2" aria-hidden="true" style="color: red"></i> Unenlist
+                                    </button>
+                                    break;
+                            }
 
-                </td>
-            </tr>
-        }
-    </table>
-</div>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
 
-<div class="container tab-pane fade" id="recPorts">
-    <br/>
-    <div class="row" style="width: 90%">
-        <div class="btn-group btn-group-sm pull-right">
-            <button class="btn btn-default btn-xs" onclick="receiveLocationOperation('@BtsArtifactAction.Start', '@Model.Name', '', '')">
-                <i class="fa fa-check-circle fa-2" style="color: green"></i> Enable All
-            </button>
-            <button class="btn btn-default btn-xs" onclick="receiveLocationOperation('@BtsArtifactAction.Stop', '@Model.Name', '', '')">
-                <i class="fa fa-exclamation-circle fa-2" aria-hidden="true" style="color: red"></i> Disable All
-            </button>
-        </div><br/>
-    </div>
-    <table class="table table-hover table-responsive table-striped table-font12 table-condensed">
-        <tr>
-            <th></th>
-            <th>Name</th>
-            <th></th>
-            <th>Receive Location</th>
-        </tr>
-        @foreach (var item in Model.ReceivePorts)
-        {
-            <tr>
-                <td>
-                    <div class="btn-group btn-group-xs">
-                        <button class="btn btn-default btn-xs" onclick="receiveLocationOperation('@BtsArtifactAction.Start', '@Model.Name', '@item.Name', '')">
-                            <i class="fa fa-check-circle fa-2" style="color: green"></i> Enable All
-                        </button>
-                        <button class="btn btn-default btn-xs" onclick="receiveLocationOperation('@BtsArtifactAction.Stop', '@Model.Name', '@item.Name', '')">
-                            <i class="fa fa-exclamation-circle fa-2" aria-hidden="true" style="color: red"></i> Disable All
-                        </button>
-                    </div><br/>
-                </td>
-                <td>
-                    <span class="span-width-100">
+        <div class="container tab-pane fade" id="recPorts">
+            <br />
+            <div class="row" style="width: 90%">
+                <div class="btn-group btn-group-sm pull-right">
+                    <button class="btn btn-default btn-xs" onclick="receiveLocationOperation('@BtsArtifactAction.Start', '@Model.Name', '', '')">
+                        <i class="fa fa-check-circle fa-2" style="color: green"></i> Enable All
+                    </button>
+                    <button class="btn btn-default btn-xs" onclick="receiveLocationOperation('@BtsArtifactAction.Stop', '@Model.Name', '', '')">
+                        <i class="fa fa-exclamation-circle fa-2" aria-hidden="true" style="color: red"></i> Disable All
+                    </button>
+                </div><br />
+            </div>
+            <table class="table table-hover table-responsive table-striped table-font12 table-condensed">
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th></th>
+                    <th>Receive Location</th>
+                </tr>
+                @foreach (var item in Model.ReceivePorts)
+                {
+                    <tr>
+                        <td>
+                            <div class="btn-group btn-group-xs">
+                                <button class="btn btn-default btn-xs" onclick="receiveLocationOperation('@BtsArtifactAction.Start', '@Model.Name', '@item.Name', '')">
+                                    <i class="fa fa-check-circle fa-2" style="color: green"></i> Enable All
+                                </button>
+                                <button class="btn btn-default btn-xs" onclick="receiveLocationOperation('@BtsArtifactAction.Stop', '@Model.Name', '@item.Name', '')">
+                                    <i class="fa fa-exclamation-circle fa-2" aria-hidden="true" style="color: red"></i> Disable All
+                                </button>
+                            </div><br />
+                        </td>
+                        <td>
+                            <span class="span-width-100">
                                 @item.Name
                             </span>
-                </td>
-                <td>
-                    <table>
-                        <tr>
-                            <td>
-                                @if (item.TwoWay)
+                        </td>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>
+                                        @if (item.TwoWay)
+                                        {
+                                            <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Two Way">2W</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Single">S</div>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.RouteFailedMessages)
+                                        {
+                                            <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Route Failed Message Enabled">RF</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="alphabetCircle btsWarning" data-toggle="tooltip" data-html="true" data-placement="left" title="Route Failed Message Disabled">RF</div>
+                                        }
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <table class="table table-hover table-condensed table-striped table-font12">
+                                <tr>
+                                    <th></th>
+                                    <th>Name</th>
+                                    <th>Adapter</th>
+                                    <th>Address</th>
+                                    <th>Host</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                                @foreach (var recLoc in item.ReceiveLocations)
                                 {
-                                    <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Two Way">2W</div>
-                                }
-                                else
-                                {
-                                    <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Single">S</div>
-                                }
-                            </td>
-                            <td>
-                                @if (item.RouteFailedMessages)
-                                {
-                                    <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Route Failed Message Enabled">RF</div>
-                                }
-                                else
-                                {
-                                    <div class="alphabetCircle btsWarning" data-toggle="tooltip" data-html="true" data-placement="left" title="Route Failed Message Disabled">RF</div>
-                                }
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-                <td>
-                    <table class="table table-hover table-condensed table-striped table-font12">
-                        <tr>
-                            <th></th>
-                            <th>Name</th>
-                            <th>Adapter</th>
-                            <th>Address</th>
-                            <th>Host</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                        @foreach (var recLoc in item.ReceiveLocations)
-                        {
-                            <tr>
-                                <td title="@recLoc.Status">
-                                    @switch (recLoc.Status)
-                                    {
-                                        case BtsArtifactStatus.Started:
-                                            <i class="fa fa-check-circle fa-2" style="color: green"></i>
-                                            break;
-                                        case BtsArtifactStatus.Stopped:
-                                            <i class="fa fa-exclamation-circle fa-2" aria-hidden="true" style="color: red"></i>
-                                            break;
-                                    }
+                                    <tr>
+                                        <td title="@recLoc.Status">
+                                            @switch (recLoc.Status)
+                                            {
+                                                case BtsArtifactStatus.Started:
+                                                    <i class="fa fa-check-circle fa-2" style="color: green"></i>
+                                                    break;
+                                                case BtsArtifactStatus.Stopped:
+                                                    <i class="fa fa-exclamation-circle fa-2" aria-hidden="true" style="color: red"></i>
+                                                    break;
+                                            }
 
-                                </td>
-                                <td>
-                                    <span class="span-width-100">
+                                        </td>
+                                        <td>
+                                            <span class="span-width-100">
                                                 @recLoc.Name
                                             </span>
-                                </td>
-                                <td>
-                                    @recLoc.Adapter
-                                </td>
-                                <td>
-                                    <span class="span-width-100">
+                                        </td>
+                                        <td>
+                                            @recLoc.Adapter
+                                        </td>
+                                        <td>
+                                            <span class="span-width-100">
                                                 @recLoc.Address
                                             </span>
-                                </td>
-                                <td>
-                                    <span class="span-width-100">
+                                        </td>
+                                        <td>
+                                            <span class="span-width-100">
                                                 @recLoc.HostName
                                             </span>
-                                </td>
-                                <td>
-                                    <table>
-                                        <tr>
-                                            <td>
-                                                @if (recLoc.Primary)
-                                                {
-                                                    <div class="alphabetCircle btsSuccess" data-toggle="tooltip" data-html="true" data-placement="left" title="Primary">P</div>
-                                                }
-                                                else
-                                                {
-                                                    <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Not Primary">P</div>
-                                                }
-                                            </td>
-                                            <td>
-                                                @if (recLoc.StartEndDateEnabled)
-                                                {
-                                                    var startEndDate = string.Format("Schedule Dates <br/> From : '{0}' To: '{1}'", recLoc.StartDate.Value.ToString(AppSettings.DateDisplay), recLoc.EndDate.Value.ToString(AppSettings.DateDisplay));
-                                                    <div class="alphabetCircle btsWarning" data-toggle="tooltip" data-html="true" data-placement="left" title="@startEndDate">SC</div>
-                                                }
-                                                else
-                                                {
-                                                    <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Start End Date schedule disabled">SC</div>
-                                                }
-                                            </td>
-                                            <td>
-                                                @if (recLoc.ServiceWindowEnabled)
-                                                {
-                                                    var fromToTime = string.Format("Service Window <br/> From: '{0}' To: {1}", recLoc.FromTime.Value.ToString(AppSettings.TimeDisplay), recLoc.ToTime.Value.ToString(AppSettings.TimeDisplay));
-                                                    <div class="alphabetCircle btsWarning" data-toggle="tooltip" data-html="true" data-placement="left" title="@fromToTime">SW</div>
-                                                }
-                                                else
-                                                {
-                                                    <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Service window disabled">SW</div>
-                                                }
-                                            </td>
-                                            <td>
+                                        </td>
+                                        <td>
+                                            <table>
+                                                <tr>
+                                                    <td>
+                                                        @if (recLoc.Primary)
+                                                        {
+                                                            <div class="alphabetCircle btsSuccess" data-toggle="tooltip" data-html="true" data-placement="left" title="Primary">P</div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Not Primary">P</div>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @if (recLoc.StartEndDateEnabled)
+                                                        {
+                                                            var startEndDate = string.Format("Schedule Dates <br/> From : '{0}' To: '{1}'", recLoc.StartDate.Value.ToString(AppSettings.DateDisplay), recLoc.EndDate.Value.ToString(AppSettings.DateDisplay));
+                                                            <div class="alphabetCircle btsWarning" data-toggle="tooltip" data-html="true" data-placement="left" title="@startEndDate">SC</div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Start End Date schedule disabled">SC</div>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @if (recLoc.ServiceWindowEnabled)
+                                                        {
+                                                            var fromToTime = string.Format("Service Window <br/> From: '{0}' To: {1}", recLoc.FromTime.Value.ToString(AppSettings.TimeDisplay), recLoc.ToTime.Value.ToString(AppSettings.TimeDisplay));
+                                                            <div class="alphabetCircle btsWarning" data-toggle="tooltip" data-html="true" data-placement="left" title="@fromToTime">SW</div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="alphabetCircle btsAllGood" data-toggle="tooltip" data-html="true" data-placement="left" title="Service window disabled">SW</div>
+                                                        }
+                                                    </td>
+                                                    <td></td>
+                                                </tr>
+                                            </table>
 
-                                            </td>
-                                        </tr>
-                                    </table>
+                                        </td>
+                                        <td>
+                                            @if (recLoc.Status == BtsArtifactStatus.Started)
+                                            {
+                                                <button class="btn btn-default btn-xs" onclick="receiveLocationOperation('@BtsArtifactAction.Start', '@Model.Name', '@item.Name', '@recLoc.Name')" disabled="disabled">
+                                                    <i class="fa fa-check-circle fa-2" style="color: green"></i> Enable
+                                                </button>
+                                                <button class="btn btn-default btn-xs" onclick="receiveLocationOperation('@BtsArtifactAction.Stop', '@Model.Name', '@item.Name', '@recLoc.Name')">
+                                                    <i class="fa fa-exclamation-circle fa-2" aria-hidden="true" style="color: red"></i> Disable
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-default btn-xs" onclick="receiveLocationOperation('@BtsArtifactAction.Start', '@Model.Name', '@item.Name', '@recLoc.Name')">
+                                                    <i class="fa fa-check-circle fa-2" style="color: green"></i> Enable
+                                                </button>
+                                                <button class="btn btn-default btn-xs" onclick="receiveLocationOperation('@BtsArtifactAction.Stop', '@Model.Name', '@item.Name', '@recLoc.Name')" disabled="disabled">
+                                                    <i class="fa fa-exclamation-circle fa-2" aria-hidden="true" style="color: red"></i> Disable
+                                                </button>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </td>
 
-                                </td>
-                                <td>
-                                    @if (recLoc.Status == BtsArtifactStatus.Started)
-                                    {
-                                        <button class="btn btn-default btn-xs" onclick="receiveLocationOperation('@BtsArtifactAction.Start', '@Model.Name', '@item.Name', '@recLoc.Name')" disabled="disabled">
-                                            <i class="fa fa-check-circle fa-2" style="color: green"></i> Enable
-                                        </button>
-                                        <button class="btn btn-default btn-xs" onclick="receiveLocationOperation('@BtsArtifactAction.Stop', '@Model.Name', '@item.Name', '@recLoc.Name')">
-                                            <i class="fa fa-exclamation-circle fa-2" aria-hidden="true" style="color: red"></i> Disable
-                                        </button>
-                                    }
-                                    else
-                                    {
-                                        <button class="btn btn-default btn-xs" onclick="receiveLocationOperation('@BtsArtifactAction.Start', '@Model.Name', '@item.Name', '@recLoc.Name')">
-                                            <i class="fa fa-check-circle fa-2" style="color: green"></i> Enable
-                                        </button>
-                                        <button class="btn btn-default btn-xs" onclick="receiveLocationOperation('@BtsArtifactAction.Stop', '@Model.Name', '@item.Name', '@recLoc.Name')" disabled="disabled">
-                                            <i class="fa fa-exclamation-circle fa-2" aria-hidden="true" style="color: red"></i> Disable
-                                        </button>
-                                    }
-                                </td>
-                            </tr>
-                        }
-                    </table>
-                </td>
-
-            </tr>
-        }
-    </table>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
 </div>
-</div>
-</div>
-<input type="hidden" id="orchOpUrl" value="@Url.Action("Orchestration", "BtsOps")"/>
-<input type="hidden" id="spOpUrl" value="@Url.Action("SendPort", "BtsOps")"/>
+<input type="hidden" id="orchOpUrl" value="@Url.Action("Orchestration", "BtsOps")" />
+<input type="hidden" id="spOpUrl" value="@Url.Action("SendPort", "BtsOps")" />
 <input type="hidden" id="rpOpUrl" value="@Url.Action("ReceiveLocation","BtsOps")" />
 
 <script type="text/javascript">
